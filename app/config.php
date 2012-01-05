@@ -1,4 +1,5 @@
 <?php
+
 $config = Simple_Config::getInstance();
 $config->setGlobalOption("app_home", "D:/project/php/simplework/app");
 $config->setGlobalLoader("Work_Router_Regex");
