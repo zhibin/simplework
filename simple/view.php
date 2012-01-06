@@ -31,7 +31,7 @@ class Simple_View
     {
         $oldstatus = $this->_response->_isrender;
         $this->_response->_isrender = true;
-        $view = $this->_response->_dispatch->app($map, true);
+        $view = $this->_response->_dispatch->app($map);
         $this->_response->_isrender = $oldstatus;
     }
     public function getUrl($map)

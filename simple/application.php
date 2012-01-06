@@ -23,6 +23,7 @@ class Simple_Application
             $this->config->loader();
             Simple_Front::getInstance()->run();
         } catch (Simple_Exception $e) {
+            echo $e->getMessage();
             echo $e->getTraceAsString();
             echo "\r\n";
         }

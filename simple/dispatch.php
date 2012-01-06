@@ -16,18 +16,10 @@ class Simple_Dispatch
         $result = $this->rewrite->getResult();
         $this->app($result);
     }
-    public function app($result, $layout = false)
+    public function app($result)
     {
         $result = $this->arraytolower($result);
         $this->response->clear();
-        if (! $layout) {
-            if ($this->response->_isrender)
-                $suffix = "Action"; else
-                $suffix = "Layout";
-        } else {
-            $suffix = "Layout";
-        }
-        
         try{
             $result = $this->validApp($result);
         }catch (Simple_Exception $e) {
@@ -58,7 +50,7 @@ class Simple_Dispatch
                  throw new Simple_Exception("error not find ");
              }
         }
-        $result_class = $this->formatToClass($result, $suffix);
+        $result_class = $this->formatToClass($result);
         $controller = new $result_class['controller']($result, $this->request, $this->response, $this);
         if (! method_exists($controller, $result_class['action'])) {
              $config = Simple_Registry::get("config");
@@ -130,16 +122,26 @@ class Simple_Dispatch
     }
     public function formatToFile($result)
     {
+        $config = Simple_Registry::get("config");
+        $controller_suffix = $config->getOption($result['app'], "controller_suffix");
+        if (empty($controller_suffix)) {
+            $controller_suffix = ".php";
+        } else {
+            $controller_suffix = "." . $controller_suffix . ".php";
+        }
         $result_format['app'] = strtolower($result['app']);
-        $result_format['controller'] = strtolower($result['controller']) . ".controller.php";
+        $result_format['controller'] = strtolower($result['controller']) . $controller_suffix;
         $result_format['action'] = strtolower($result['action']);
         return $result_format;
     }
-    public function formatToClass($result, $suffix="Action")
+    public function formatToClass($result)
     {
+        $config = Simple_Registry::get("config");
+        $controller_suffix = $config->getOption($result['app'], "controller_suffix");
+        $action_suffix = $config->getOption($result['app'], "action_suffix");
         $result_format['app'] = strtolower($result['app']);
-        $result_format['controller'] = ucfirst(strtolower($result['controller'])) . "Controller";
-        $result_format['action'] = ucfirst(strtolower($result['action'])) . $suffix;
+        $result_format['controller'] = ucfirst(strtolower($result['controller'])) . ucfirst($controller_suffix);
+        $result_format['action'] = ucfirst(strtolower($result['action'])) . ucfirst($action_suffix);
         return $result_format;
     }
 }

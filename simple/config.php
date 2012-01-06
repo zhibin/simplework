@@ -139,6 +139,13 @@ class Simple_Config
         $this->setGlobalOption("db_pass", "");
         $this->setGlobalOption("db_port", "");
         $this->setGlobalOption("db_name", "");
+        $this->setGlobalOption("error_page", array("app"=>"error" , "controller"=>"error" , "action"=>"error"));
+        $this->setGlobalOption("controller_prefix","");
+        $this->setGlobalOption("controller_suffix", "controller");
+         $this->setGlobalOption("action_prefix","");
+        $this->setGlobalOption("action_suffix", "action");
+        
+        
         $this->setGlobalIncludePath("");
         $this->setGlobalPhpSetting("", "");
     }

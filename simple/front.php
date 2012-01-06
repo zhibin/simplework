@@ -24,6 +24,7 @@ class Simple_Front
             $this->dispatch->start();
         } catch (Simple_Exception $e) {
             echo $e->getMessage();
+            echo $e->getTraceAsString();
         }
     }
 }

@@ -9,16 +9,16 @@ class IndexController extends Simple_Controller
         echo $layout->getUrl(array("index" , "index" , "def" , array("d" => 1)));
         $layout->render();
     }
-    public function DefLayout()
+    public function DefAction()
     {
         $this->response->bbb = "bbb";
         $this->response->render("/");
     }
-    public function AbcLayout()
+    public function AbcAction()
     {
         $this->response->bbb = "dddddddddddddd";
     }
-    public function BcdLayout()
+    public function BcdAction()
     {
         /*
 		$layout= $this->response->setLayout("helper.layout.htm");  
@@ -30,5 +30,10 @@ class IndexController extends Simple_Controller
 		$layout->render();
 		 */
         $this->response->name = "2wzb";
+    }
+    public function errorAction()
+    {
+        echo "this is error page";
+        exit;
     }
 }
