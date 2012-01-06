@@ -27,57 +27,90 @@ class Simple_Dispatch
         } else {
             $suffix = "Layout";
         }
-        try {
-            $result_class = $this->validController($result, $suffix);
-        } catch (Simple_Exception $e) {
-            try {
-                $result_class = $this->validController(array("app" => "error" , "controller" => "error" , "action" => "error"), $suffix);
-            } catch (Simple_Exception $e) {
-                throw new Simple_Exception("error not find ");
+        
+        try{
+            $result = $this->validApp($result);
+        }catch (Simple_Exception $e) {
+            try{
+                $config = Simple_Registry::get("config");
+                $result = $config->getGlobalOption("error_page"); 
+                $result = $this->validApp($result);
+            }catch (Simple_Exception $e)
+            {
+                 throw new Simple_Exception("error not find ");
             }
         }
+        try{
+            $result = $this->validController($result);
+        }
+        catch (Simple_Exception $e){
+             $config = Simple_Registry::get("config");
+             $error_page = $config->getOption($result['app'], "error_page"); 
+             $global_error_page =  $config->getGlobalOption("error_page"); 
+             if(!$this->diff($result, $global_error_page) ){
+                 throw new Simple_Exception("1error not find ");
+             }
+             else if($this->diff($result, $error_page)){
+                 $this->app($error_page);
+                 exit;
+             }
+             else {
+                 throw new Simple_Exception("error not find ");
+             }
+        }
+        $result_class = $this->formatToClass($result, $suffix);
         $controller = new $result_class['controller']($result, $this->request, $this->response, $this);
         if (! method_exists($controller, $result_class['action'])) {
-            if (method_exists($controller, "errorAction")) {
-                $result_class['action'] = "errorAction";
-                $result['action'] = "error";
-            } else {
-                if ($result_class['action'] == "ErrorAction") {
-                    $this->app(array("app" => "error" , "controller" => "error" , "action" => "error"));
-                } else {
-                    $this->app(array("app" => $result['app'] , "controller" => "error" , "action" => "error"));
-                }
-                exit();
-            }
+             $config = Simple_Registry::get("config");
+             $error_page = $config->getOption($result['app'], "error_page"); 
+             $global_error_page =  $config->getGlobalOption("error_page"); 
+             if(!$this->diff($result, $global_error_page) ){
+                 throw new Simple_Exception("2error not find ");
+             } else if($this->diff($result, $error_page)){
+                 $this->app($error_page);
+                 exit;
+             } else {
+                 throw new Simple_Exception("3error not find ");
+             }
         }
         $controller->$result_class['action']();
         $view = $this->response->render($result);
         return $view;
     }
-    public function validController($result, $suffix)
+    public function validApp($result)
     {
-        $result_class = $this->formatToClass($result, $suffix);
-        $result_file = $this->formatToFile($result);
-        $app = $result_class['app'];
-        $controller = $result_class['controller'];
-        $action = $result_class['action'];
+        
+        $result = $this->arraytolower($result);
+        if(empty($result['app']) || empty($result['controller']) || empty($result['action']))
+        {
+            throw new Simple_Exception("empty!");
+        }
         $config = Simple_Registry::get("config");
-        $app_home_path = $config->getOption($app, "app_home");
-        $app_path = $app_home_path . "/" . $app . "/controller";
+        $app_home_path = $config->getOption($result['app'], "app_home");
+        $app_path = $app_home_path . "/" . $result['app'] . "/controller";
+        
         if (! is_dir($app_path)) {
             throw new Simple_Exception("$app_path not find ");
         }
+        $result_file = $this->formatToFile($result);
         $controller_path = $app_path . "/" . $result_file['controller'];
         if (! file_exists($controller_path)) {
             throw new Simple_Exception("$controller_path not find ");
         }
-        if (! class_exists($controller)) {
+        $result_class = $this->formatToClass($result);
+        if (! class_exists($result_class['controller'])) {
             include_once $controller_path;
         }
-        if (! class_exists($controller)) {
-            throw new Simple_Exception("$controller not find ");
+        return $result;
+    }
+    public function validController($result)
+    {
+        $result_class = $this->formatToClass($result);
+        if(! class_exists($result_class['controller']))
+        {
+              throw new Simple_Exception("{$result_class['controller']} not find ");
         }
-        return $result_class;
+        return $result;
     }
     public function arraytolower($result)
     {
@@ -86,6 +119,15 @@ class Simple_Dispatch
         }
         return $arr;
     }
+    public function diff($arr1, $arr2)
+    {
+        foreach($arr1 as $k=>$v)
+        {
+            if($v != $arr2[$k]) 
+                return true;
+        }
+        return false;
+    }
     public function formatToFile($result)
     {
         $result_format['app'] = strtolower($result['app']);
@@ -93,7 +135,7 @@ class Simple_Dispatch
         $result_format['action'] = strtolower($result['action']);
         return $result_format;
     }
-    public function formatToClass($result, $suffix)
+    public function formatToClass($result, $suffix="Action")
     {
         $result_format['app'] = strtolower($result['app']);
         $result_format['controller'] = ucfirst(strtolower($result['controller'])) . "Controller";

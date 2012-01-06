@@ -1,12 +1,13 @@
 <?php
-
 $config = Simple_Config::getInstance();
 $config->setGlobalOption("app_home", "D:/project/php/simplework/app");
 $config->setGlobalLoader("Work_Router_Regex");
 $config->setGlobalLoader("Work_Db_Zend");
 $config->setGlobalOption("router_url", "Simple_Router");
-$config->setGlobalOption("home_page", array("index" , "index" , "index"));
+$config->setGlobalOption("home_page",  array("index" , "index" , "index"));
+$config->setGlobalOption("error_page", array("app"=>"index" , "controller"=>"error" , "action"=>"error2"));
 $config->setMainApplication("index");
+$config->setOption("error_page", array("app"=>"index" , "controller"=>"index" , "action"=>"index"));
 $config->setIncludePath("d:\\project\\123");
 $config->setIncludePath("d:\\project\\123");
 $config->setPhpSetting("display_errors", 1);
