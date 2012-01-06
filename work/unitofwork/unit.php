@@ -1,15 +1,25 @@
 <?php
-class Work_Unitofwork_Unit extends Simple_Work
+class Work_Unitofwork_Unit extends Simple_Work 
 {
+    
     public function depend()
     {
         return array("zend_db" => "Work_Db_Zend");
     }
+   
     public function loader()
     {
-        $autoload = Simple_Autoload::getInstance();
-        $autoload->registerAutoload(array($this , "autoload"));
-        $zend_db = $this->zend_db;
+        if (self::$work == null) {
+            $autoload = Simple_Autoload::getInstance();
+            $autoload->registerAutoload(array($this , "autoload"));
+            $zend_db = $this->zend_db;
+            self::$work = $this;
+        }
+        return self::$work;
+    }
+    public function getDb()
+    {
+        return $this->zend_db;
     }
     public function autoload($className)
     {

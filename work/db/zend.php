@@ -1,7 +1,6 @@
 <?php
-class Work_Db_Zend extends Simple_Work 
+class Work_Db_Zend  
 {
-    public function depend(){}
     public function loader()
     {
         if(!Simple_Registry::isRegistered("zend_db"))

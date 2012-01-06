@@ -1,28 +1,39 @@
 <?php
 class Simple_Work
 {
-    protected  $work;
+    public static $work;
+    protected $obj;
     protected function __get($key)
     {
-        return $this->work[$key];
+        return $this->obj[$key];
     }
-    protected function __set($key,  $value)
+    protected function __set($key, $value)
     {
-        $this->work[$key] = $value;
+        $this->obj[$key] = $value;
     }
     public function __construct()
     {
+        if(self::$work != null)
+        {
+            throw new Simple_Exception("please call loader");
+        }
         $depends = $this->depend();
         if (! empty($depends)) {
             foreach ($depends as $k => $v) {
                 if (! class_exists($v)) {
                     throw new Simple_Exception("work not exists");
                 }
-                $obj = new $v();
-                $work = $obj->loader();
-                $this->$k = $work;
+                if (! $this->work[$k]) {
+                    $obj = new $v();
+                    $work = $obj->loader();
+                    $this->$k = $work;
+                }
             }
         }
+    }
+    public function depend()
+    {
+        
     }
 }
 ?>
