@@ -1,9 +1,18 @@
 <?php
 class Simple_Autoload
 {
-    public function __construct()
+    public static  $autoload = null;
+    private function __construct()
     {
         spl_autoload_register(array($this , 'loader'));
+    }
+    public static function  getInstance()
+    {
+        if(self::$autoload == null)
+        {
+            self::$autoload =  new self();
+        }
+        return self::$autoload;
     }
     public function registerAutoload($loader)
     {

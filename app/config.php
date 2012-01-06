@@ -5,6 +5,7 @@ $config->setGlobalLoader("Work_Router_Regex");
 $config->setGlobalLoader("Work_Unitofwork_Unit");
 $config->setGlobalLoader("Work_Db_Zend");
 $config->setGlobalOption("router_url", "Simple_Router");
+$config->setGlobalOption("entity_path", "D:/project/php/simplework/app/entity");
 $config->setGlobalOption("home_page",  array("app"=>"index" , "controller"=>"index" , "action"=>"index"));
 $config->setMainApplication("index");
 $config->setOption("error_page", array("app"=>"index" , "controller"=>"index" , "action"=>"error"));
