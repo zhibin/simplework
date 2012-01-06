@@ -1,18 +1,15 @@
 <?php
-class Work_Unitofwork_Entity
+class Entity
 {
-    public function depend()
+    public $unitofwork;
+    public function __construct()
     {
-        return array("unit"=>"Work_Unitofwork_Unit");
+        $this->unitofwork = UnitofWork::getInstance();
     }
-    public function getUnit()
+    public function getEntity($sql)
     {
-        return  Work_Unitofwork_Unit::$work;
-    }
-    public function getEntityById($id)
-    {
-     
-        print_r($this->getUnit());
+        $unitofwork->createEntity($sql, $this);
+        return $this;
     }
 }
 

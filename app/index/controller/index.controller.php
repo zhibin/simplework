@@ -8,7 +8,7 @@ class IndexController extends Simple_Controller
         $layout->header = $this->dispatch->app(array("app" => "index" , "controller" => "index" , "action" => "abc"));
         echo $layout->getUrl(array("index" , "index" , "def" , array("d" => 1)));
         $layout->render();
-       usersEntity::getUser();
+      
     }
     public function DefAction()
     {

@@ -1,11 +1,10 @@
 <?php
-class usersEntity  extends Work_Unitofwork_Entity 
+class usersEntity  extends Entity 
 {
   
     public static function getUser()
     {
-       $users =  new self();
-       $users->getEntityById("123");
+       
     }
 }
 ?>
