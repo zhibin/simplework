@@ -1,16 +1,16 @@
 <?php
 class Simple_Request
 {
-    public $_params;
+    public $params;
     public function __set($key, $value)
     {
-        $this->_params[$key] = $value;
+        $this->params[$key] = $value;
     }
     public function get($key)
     {
         switch (true) {
-            case isset($this->_params[$key]):
-                return $this->_params[$key];
+            case isset($this->params[$key]):
+                return $this->params[$key];
             case isset($_GET[$key]):
                 return $_GET[$key];
             case isset($_POST[$key]):

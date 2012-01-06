@@ -1,32 +1,32 @@
 <?php
 class Simple_Response
 {
-    private $_params = array();
-    public $_isrender = true;
-    public $_dispatch;
-    public $_header = array();
+    private $params = array();
+    public $isrender = true;
+    public $dispatch;
+    public $header = array();
     public function getDispatch($dispatch)
     {
-        $this->_dispatch = $dispatch;
+        $this->dispatch = $dispatch;
     }
     public function __set($name, $value)
     {
-        $this->_params[$name] = $value;
+        $this->params[$name] = $value;
     }
     public function __get($name)
     {
-        return $this->_params[$name];
+        return $this->params[$name];
     }
     public function clear()
     {
-        $this->_params = array();
+        $this->params = array();
     }
     public function setLayout($name, $app)
     {
         $config = Simple_Registry::get("config");
         $layout_home_path = $config->getOption($app, "app_home") . '/' . $app . '/layout';
         $layout = new Simple_Layout($layout_home_path . "/" . $name, array(), $this);
-        $this->_isrender = false;
+        $this->isrender = false;
         return $layout;
     }
     public function render($map)
@@ -44,20 +44,20 @@ class Simple_Response
         {
             throw new Simple_Exception("$defaulttemplate not find");
         }
-        $view = new Simple_View($defaulttemplate, $this->_params, $this);
-        if ($this->_isrender) {
+        $view = new Simple_View($defaulttemplate, $this->params, $this);
+        if ($this->isrender) {
             $view->render();
         }
         return $view;
     }
     public function header($key, $value)
     {
-        $this->_header[$key] = $value;
+        $this->header[$key] = $value;
     }
     public function sendHeader()
     {
-        if(!empty($this->_header))
-        foreach ($this->_header as $k => $v)
+        if(!empty($this->header))
+        foreach ($this->header as $k => $v)
         {
             header("$k:$v");
             if($k == "Location") exit;
@@ -70,7 +70,7 @@ class Simple_Response
     }
     public function getUrl($map)
     {
-        $router = $this->_dispatch->rewrite->getRouter($map);
+        $router = $this->dispatch->rewrite->getRouter($map);
         return $router->getUrl($map);
     }
 }

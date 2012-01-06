@@ -1,41 +1,41 @@
 <?php
 class Simple_View
 {
-    public $_params;
-    public $_template;
-    public $_response;
+    public $params;
+    public $template;
+    public $response;
     public function __construct($template, $params = array(), $response)
     {
-        $this->_params = $params;
-        $this->_template = $template;
-        $this->_response = $response;
+        $this->params = $params;
+        $this->template = $template;
+        $this->response = $response;
     }
     public function render()
     {
-        include $this->_template;
+        include $this->template;
     }
     public function __set($key, $value)
     {
-        $this->_params[$key] = $value;
+        $this->params[$key] = $value;
     }
     public function __get($key)
     {
-        $view = $this->_params[$key];
+        $view = $this->params[$key];
         if ($view instanceof Simple_View) {
-            $this->_params[$key]->render();
+            $this->params[$key]->render();
         } else {
-            return $this->_params[$key];
+            return $this->params[$key];
         }
     }
     public function action($map)
     {
-        $oldstatus = $this->_response->_isrender;
-        $this->_response->_isrender = true;
-        $view = $this->_response->_dispatch->app($map);
-        $this->_response->_isrender = $oldstatus;
+        $oldstatus = $this->response->isrender;
+        $this->response->isrender = true;
+        $view = $this->response->dispatch->app($map);
+        $this->response->isrender = $oldstatus;
     }
     public function getUrl($map)
     {
-        return $this->_response->getUrl($map);
+        return $this->response->getUrl($map);
     }
 }
