@@ -32,19 +32,19 @@ class Simple_Router
         $config = Simple_Registry::get("config");
         if (empty($app)) {
             $home_page = $config->getOption("global", "home_page");
-            $this->request->app = $home_page[0];
+            $this->request->app = $home_page['app'];
         } else {
             $this->request->app = $app;
         }
         if (empty($c)) {
             $home_page = $config->getOption($this->request->app, "home_page");
-            $this->request->controller = $home_page[1];
+            $this->request->controller = $home_page['controller'];
         } else {
             $this->request->controller = $c;
         }
         if (empty($a)) {
             $home_page = $config->getOption($this->request->app, "home_page");
-            $this->request->action = $home_page[2];
+            $this->request->action = $home_page['action'];
         } else {
             $this->request->action = $a;
         }
@@ -53,13 +53,13 @@ class Simple_Router
     {
         $config = Simple_Registry::get("config");
         $home_page = $config->getOption($map[0], "home_page");
-        if ($map[0] != $home_page[0]) {
+        if ($map[0] != $home_page['app']) {
             $query_array['app'] = strtolower($map[0]);
         }
-        if ($map[1] != $home_page[1]) {
+        if ($map[1] != $home_page['controller']) {
             $query_array['c'] = strtolower($map[1]);
         }
-        if ($map[2] != $home_page[2]) {
+        if ($map[2] != $home_page['action']) {
             $query_array['a'] = strtolower($map[2]);
         }
         if (! empty($map[3])) {

@@ -17,5 +17,7 @@ class Simple_Controller
 	protected function init()
 	{
 	}
-
+    public  function end()
+    {
+    }
 }

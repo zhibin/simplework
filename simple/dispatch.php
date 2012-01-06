@@ -14,6 +14,7 @@ class Simple_Dispatch
         $this->response->getDispatch($this);
         $this->rewrite->analysis();
         $result = $this->rewrite->getResult();
+        ob_start();
         $this->app($result);
     }
     public function app($result)
@@ -66,6 +67,8 @@ class Simple_Dispatch
              }
         }
         $controller->$result_class['action']();
+        $controller->end();
+        $this->response->sendHeader();
         $view = $this->response->render($result);
         return $view;
     }

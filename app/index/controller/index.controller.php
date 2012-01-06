@@ -16,6 +16,7 @@ class IndexController extends Simple_Controller
     }
     public function AbcAction()
     {
+//        $this->response->header("Location", "http://www.sina.com.cn");
         $this->response->bbb = "dddddddddddddd";
     }
     public function BcdAction()
@@ -29,7 +30,8 @@ class IndexController extends Simple_Controller
 
 		$layout->render();
 		 */
-        $this->response->name = "2wzb";
+//        $this->response->jump( "http://www.baidu.com");
+        $this->response->name = "555";
     }
     public function errorAction()
     {

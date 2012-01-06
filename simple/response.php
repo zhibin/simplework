@@ -4,6 +4,7 @@ class Simple_Response
     private $_params = array();
     public $_isrender = true;
     public $_dispatch;
+    public $_header = array();
     public function getDispatch($dispatch)
     {
         $this->_dispatch = $dispatch;
@@ -48,6 +49,24 @@ class Simple_Response
             $view->render();
         }
         return $view;
+    }
+    public function header($key, $value)
+    {
+        $this->_header[$key] = $value;
+    }
+    public function sendHeader()
+    {
+        if(!empty($this->_header))
+        foreach ($this->_header as $k => $v)
+        {
+            header("$k:$v");
+            if($k == "Location") exit;
+        }
+    }
+    public function jump($url)
+    {
+        header("Location:$url");
+        exit;
     }
     public function getUrl($map)
     {
