@@ -2,6 +2,7 @@
 $config = Simple_Config::getInstance();
 $config->setGlobalOption("app_home", "D:/project/php/simplework/app");
 $config->setGlobalLoader("Work_Router_Regex");
+$config->setGlobalLoader("Work_Unitofwork_Unit");
 $config->setGlobalLoader("Work_Db_Zend");
 $config->setGlobalOption("router_url", "Simple_Router");
 $config->setGlobalOption("home_page",  array("app"=>"index" , "controller"=>"index" , "action"=>"index"));
