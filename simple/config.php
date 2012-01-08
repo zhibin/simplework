@@ -58,8 +58,7 @@ class Simple_Config
     {
         if (! empty($this->loader))
             foreach ($this->loader['global'] as $k => $v) {
-                $obj = new $v();
-                $obj->loader();
+               Simple_Registry::loader($v);
             }
     }
     public function getLoader($app, $key)
@@ -134,6 +133,35 @@ class Simple_Config
     public function initDefaultConfig()
     {
         $this->setGlobalOption("domain", "localhost");
+        $this->setGlobalOption("db_config",
+               array(
+               		 "master"=>array("db_host"=>"localhost",
+               						"db_user"=> "root",
+                                    "db_pass"=> "", 
+                                    "db_port"=> "",
+                                    "db_name"=> "test",
+                                    "db_charset"=>"utf-8",
+                                    "db_percent" =>""),
+               
+                    "slave0"=>array("db_host"=>"localhost",
+               						"db_user"=> "root",
+                                    "db_pass"=> "", 
+                                    "db_port"=> "",
+                                    "db_name"=> "test",
+                                    "db_charset"=>"utf-8",
+                                    "db_percent" =>70),
+               
+                    "slave1"=>array("db_host"=>"localhost",
+               						"db_user"=> "root",
+                                    "db_pass"=> "", 
+                                    "db_port"=> "",
+                                    "db_name"=> "test",
+                                    "db_charset"=>"utf-8",
+                                    "db_percent" =>30)
+               )
+               
+         );
+        $this->setGlobalOption("db_type","mysqli");//{mysqli,mysqlp,mysqls}
         $this->setGlobalOption("db_host", "localhost");
         $this->setGlobalOption("db_user", "root");
         $this->setGlobalOption("db_pass", "");
@@ -142,7 +170,7 @@ class Simple_Config
         $this->setGlobalOption("error_page", array("app"=>"error" , "controller"=>"error" , "action"=>"error"));
         $this->setGlobalOption("controller_prefix","");
         $this->setGlobalOption("controller_suffix", "controller");
-         $this->setGlobalOption("action_prefix","");
+        $this->setGlobalOption("action_prefix","");
         $this->setGlobalOption("action_suffix", "action");
         
         

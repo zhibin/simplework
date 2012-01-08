@@ -1,25 +1,32 @@
 <?php
-class Work_Db_Zend  
+class Work_Db_Zend   extends Simple_Work 
 {
-    public function loader()
+    public $db;
+    public $db_key;
+    public function loader($param =array())
     {
-        if(!Simple_Registry::isRegistered("zend_db"))
-        {
+            $this->db_key = $param['key'];
             set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__) . '/../');
             require_once "Zend/Db.php";
-            $config = Simple_Registry::get("config");
-            $params = array('host' => $config->getGlobalOption('db_host') ,
-                             'username' => $config->getGlobalOption('db_user') ,
-                             'password' => $config->getGlobalOption('db_pass') ,
-                             'dbname' => $config->getGlobalOption('db_name'));
-            $db = Zend_Db::factory('Mysqli', $params);
-            Simple_Registry::set("zend_db", $db);
-            return $db;
-        }
-        else 
-        {
-            return Simple_Registry::get("zend_db");
-        }
+         
+            $params = array('host' => $param['db_host'] ,
+                             'username' => $param['db_user'] ,
+                             'password' => $param['db_pass'] ,
+                             'dbname' => $param['db_name']);
+            $this->db = Zend_Db::factory('Mysqli', $params);
+    }
+    public function getDbHandle()
+    {
+        return $this->db;
+    }
+    public function fetch($sql, $bind=array())
+    {
+	   $row = $this->db->fetchRow($sql, $bind);
+       return $row;
+    }
+    public function fetchAll($sql, $bind=array())
+    {
+       return $this->db->fetchAll($sql, $bind);
     }
 }
 ?>

@@ -1,50 +1,19 @@
 <?php
-class Work_Unitofwork_Unit
+class Work_Unitofwork_Unit extends Simple_Work 
 {
-    protected $obj;
-    protected function __get($key)
-    {
-        return $this->obj[$key];
-    }
-    protected function __set($key, $value)
-    {
-        $this->obj[$key] = $value;
-    }
-    public function __construct()
-    {
-        $depends = $this->depend();
-        if (! empty($depends)) {
-            foreach ($depends as $k => $v) {
-                if (! class_exists($v)) {
-                    throw new Simple_Exception("work not exists");
-                }
-                if (! $this->obj[$k]) {
-                    $obj = new $v();
-                    $work = $obj->loader();
-                    $this->$k = $work;
-                }
-            }
-        }
-    }
+    public $unitofwork;
     public function depend()
     {
-        return array("zend_db" => "Work_Db_Zend");
+        return array("Work_Db_Simple");
     }
-    public function loader()
+    public function loader($param=array())
     {
-        if (! Simple_Registry::isRegistered("unitofwork")) {
             $autoload = Simple_Autoload::getInstance();
             $autoload->registerAutoload(array($this , "autoload"));
-            $zend_db = $this->zend_db;
             include_once "unitofwork.php";
             include_once "entity.php";
             $unitofwork = UnitofWork::getInstance();
-            $unitofwork->setDb($zend_db);
-            Simple_Registry::set("unitofwork", $unitofwork);
-            return $unitofwork;
-        } else {
-            return Simple_Registry::get("unitofwork");
-        }
+            $this->unitofwork = $unitofwork;
     }
     public function autoload($className)
     {
@@ -55,4 +24,5 @@ class Work_Unitofwork_Unit
             include $entity_path . "/" . $filename;
         }
     }
+    
 }

@@ -162,7 +162,18 @@ class Simple_Registry extends ArrayObject
         $instance = self::getInstance();
         $instance->offsetSet($index, $value);
     }
-
+	public static function loader($index, $param=array())
+	{
+		 $instance = self::getInstance();
+		
+		 if(!$instance->offsetExists($index.$param['key']))
+		 {
+			$value = new $index();
+			$value->loader($param);
+			self::set($index.$param['key'], $value);
+		 }
+		 return self::get($index.$param['key']);
+	}
     /**
      * Returns TRUE if the $index is a named value in the registry,
      * or FALSE if $index was not found in the registry.

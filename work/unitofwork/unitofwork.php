@@ -7,17 +7,15 @@ class UnitofWork
     {
         
     }
-    public function getInstance()
+    public static function getInstance()
     {
         if(self::$handle == null)
         {
+           
             self::$handle = new self();
+            self::$handle->db = Simple_Registry::loader("Work_Db_Simple");
         }
         return self::$handle;
-    }
-    public function setDb($db)
-    {
-        $this->db = $db;
     }
     public function createEntity($sql, $entity)
     {
