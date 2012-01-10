@@ -33,7 +33,7 @@ class Simple_Response
     public function setLayout($name, $app)
     {
         $config = Zend_Registry::get("config");
-        $layout_home_path = $config->app_home . '/' . $app . '/layout';
+        $layout_home_path = $config->app_home .'/'.$config->app_dir. '/' . $app . '/layout';
         $layout = new Simple_Layout($layout_home_path . "/" . $name, array(), $this);
         $this->isrender = false;
         return $layout;
@@ -41,7 +41,7 @@ class Simple_Response
     public function render($map)
     {
         $config = Zend_Registry::get("config");
-        $view_home_path = $config->app_home . '/' . $map['app'] . '/view';
+        $view_home_path = $config->app_home .'/'.$config->app_dir. '/' . $map['app'] . '/view';
         $template = $this->template;
         if (! empty($template)) {
             $defaulttemplate = $view_home_path . $template;

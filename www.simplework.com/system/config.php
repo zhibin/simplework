@@ -1,5 +1,6 @@
 <?php
 return array(
+"app_dir"=>"app",
 "autoload_file"=>"system/~autoload.php",
 "autoload_dirs"=>array("entity", "lib"),
 "home_page"=>array("app"=>"index","controller"=>"index", "action"=>"index"),

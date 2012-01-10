@@ -12,7 +12,6 @@ $simple_db= Simple_Db_Mysql::getInstance();
 $sql = "select * from books_author";
  $row = $simple_db->fetchAll($sql);
     print_r($row);
-     print_r(Simple_Db_Zend_Mysqli::$handles);
         $layout->render();
       
     }

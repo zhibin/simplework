@@ -150,7 +150,9 @@ class Simple_Dispatch
     }
     public function formatAppToFile($path, $app)
     {
-         return $path."/".$app;
+         $config = Zend_Registry::get("config");
+         $app_dir = $config->app_dir;
+         return $path."/".$app_dir."/".$app;
     }
     public function formatControllerToFile($path,$controller)
     {

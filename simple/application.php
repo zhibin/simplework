@@ -55,6 +55,9 @@ class Simple_Application
 		
 		//load user config
 		$zend_config->app_home = $this->app_home;
+		if(empty($zend_config->app_dir))
+		$zend_config->app_dir = "app";
+		
 		Zend_Registry::set("config", $zend_config);
 		
 		return $this;
