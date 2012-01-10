@@ -5,14 +5,14 @@ class IndexController extends Simple_Controller
     {
         $layout = $this->response->setLayout("helper.layout.htm", $this->map['app']);
         $layout->name = "hello";
-        $layout->header = $this->dispatch->app(array("app" => "index" , "controller" => "index" , "action" => "abc"));
+        $layout->header = $this->response->dispatch(array("app" => "index" , "controller" => "index" , "action" => "abc"));
         echo $layout->getUrl(array("index" , "index" , "def" , array("d" => 1)));
-        
-        $simple_db= Simple_Registry::loader("Work_Db_Simple");
-		$sql = "select * from books_author";
-        $row = $simple_db->fetchAll($sql);
-	
-        print_r($row);
+       
+$simple_db= Simple_Db_Mysql::getInstance();
+$sql = "select * from books_author";
+ $row = $simple_db->fetchAll($sql);
+    print_r($row);
+     print_r(Simple_Db_Zend_Mysqli::$handles);
         $layout->render();
       
     }

@@ -2,6 +2,7 @@
 class Simple_Dispatch
 {
     public $request;
+    public $response;
     public $rewrite;
     public function __construct($request, $response, $rewrite)
     {
@@ -21,91 +22,124 @@ class Simple_Dispatch
     {
         $result = $this->arraytolower($result);
         $this->response->clear();
-        try{
-            $result = $this->validApp($result);
-        }catch (Simple_Exception $e) {
-            try{
-                $config = Simple_Registry::get("config");
-                $result = $config->getGlobalOption("error_page"); 
-                $result = $this->validApp($result);
-            }catch (Simple_Exception $e)
-            {
-                 throw new Simple_Exception("error not find ");
-            }
-        }
-        try{
-            $result = $this->validController($result);
-        }
-        catch (Simple_Exception $e){
-             $config = Simple_Registry::get("config");
-             $error_page = $config->getOption($result['app'], "error_page"); 
-             $global_error_page =  $config->getGlobalOption("error_page"); 
-             if(!$this->diff($result, $global_error_page) ){
-                 throw new Simple_Exception("1error not find ");
-             }
-             else if($this->diff($result, $error_page)){
-                 $this->app($error_page);
-                 exit;
-             }
-             else {
-                 throw new Simple_Exception("error not find ");
-             }
-        }
-        $result_class = $this->formatToClass($result);
-        $controller = new $result_class['controller']($result, $this->request, $this->response, $this);
-        if (! method_exists($controller, $result_class['action'])) {
-             $config = Simple_Registry::get("config");
-             $error_page = $config->getOption($result['app'], "error_page"); 
-             $global_error_page =  $config->getGlobalOption("error_page"); 
-             if(!$this->diff($result, $global_error_page) ){
-                 throw new Simple_Exception("2error not find ");
-             } else if($this->diff($result, $error_page)){
-                 $this->app($error_page);
-                 exit;
-             } else {
-                 throw new Simple_Exception("3error not find ");
-             }
-        }
-        $controller->$result_class['action']();
-        $controller->end();
-        $this->response->sendHeader();
-        $view = $this->response->render($result);
-        return $view;
-    }
-    public function validApp($result)
-    {
-        
-        $result = $this->arraytolower($result);
+         
         if(empty($result['app']) || empty($result['controller']) || empty($result['action']))
         {
             throw new Simple_Exception("empty!");
         }
-        $config = Simple_Registry::get("config");
-        $app_home_path = $config->getOption($result['app'], "app_home");
-        $app_path = $app_home_path . "/" . $result['app'] . "/controller";
+        $config = Zend_Registry::get("config");
         
-        if (! is_dir($app_path)) {
-            throw new Simple_Exception("$app_path not find ");
+        $app_home = $config->app_home;
+        $app_path = $this->formatAppToFile($app_home, $result['app']);
+        $error_page = $config->error_page;
+        if (! is_dir($app_path)) 
+        {
+            $app_path = $this->formatAppToFile($app_home, $error_page->app);
+            
+             if (! is_dir($app_path)) 
+             {
+                 throw new Simple_Exception("error_page app not fand!");
+             }
+             $result = $error_page->toArray();
         }
-        $result_file = $this->formatToFile($result);
-        $controller_path = $app_path . "/" . $result_file['controller'];
-        if (! file_exists($controller_path)) {
-            throw new Simple_Exception("$controller_path not find ");
+        $controller_path = $this->formatControllerToFile($app_path, $result['controller']);
+        if (! file_exists($controller_path)) 
+        {
+            
+           
+            if($error_page->app == $result['app'] && $error_page->controller == $result['controller'])
+            {
+                 throw new Simple_Exception("error_page controller file  not fand!");
+            }
+            else if($config_app->$result['app']->error_page->app == $result['app'] && $config_app->$result['app']->error_page->controller == $result['controller'])
+            {
+                throw new Simple_Exception("{$result['app']} error_page  controller file  not fand!");
+            }
+            else 
+            {
+            	$config_app = $config->app;
+            	if(empty($config_app->$result['app']->error_page))
+            	{
+            	    $this->app($error_page->toArray());
+            	}
+            	else 
+            	{
+            	    $this->app($config_app->$result['app']->error_page->toArray());
+            	}
+            	exit;
+            }
+            
         }
-        $result_class = $this->formatToClass($result);
-        if (! class_exists($result_class['controller'])) {
+        $config_app = $config->app;
+        $controllerClass = $this->formatControllerToClass($result['controller']);
+        if (! class_exists($controllerClass)) {
             include_once $controller_path;
         }
-        return $result;
-    }
-    public function validController($result)
-    {
-        $result_class = $this->formatToClass($result);
-        if(! class_exists($result_class['controller']))
+        if (! class_exists($controllerClass)) 
         {
-              throw new Simple_Exception("{$result_class['controller']} not find ");
+            if($error_page->app == $result['app'] && $error_page->controller == $result['controller'])
+            {
+                 throw new Simple_Exception("error_page controller class not fand!");
+            }
+            else if($config_app->$result['app']->error_page->app == $result['app'] && $config_app->$result['app']->error_page->controller == $result['controller'])
+            {
+                throw new Simple_Exception("{$result['app']} error_page controller class not fand!");
+            }
+            else 
+            {
+            	
+            	if(empty($config_app->$result['app']->error_page))
+            	{
+            	    $this->app($error_page->toArray());
+            	}
+            	else 
+            	{
+            	    $this->app($config_app->$result['app']->error_page->toArray());
+            	}
+            	exit;
+            }
         }
-        return $result;
+   
+        $controller = new $controllerClass($result, $this->request, $this->response);
+        $actionClass = $this->formatActionToClass($result['action']);
+        
+        if(!method_exists($controller,$actionClass ))
+        {
+            
+            if($error_page->app == $result['app'] 
+               && $error_page->controller == $result['controller']
+               && $error_page->action == $result['action'])
+            {
+                 throw new Simple_Exception("error_page action not fand!");
+            }
+            else if($config_app->$result['app']->error_page->app == $result['app'] 
+                    && $config_app->$result['app']->error_page->controller == $result['controller']
+                    && $config_app->$result['app']->error_page->action == $result['action']
+                        )
+            {
+                throw new Simple_Exception("{$result['app']} error_page action not fand!");
+            }
+            else 
+            {
+            	if(empty($config_app->$result['app']->error_page))
+            	{
+            	    $this->app($error_page->toArray());
+            	}
+            	else 
+            	{
+            	    $this->app($config_app->$result['app']->error_page->toArray());
+            	}
+            	exit;
+            }
+        }
+        
+        
+        
+        $controller->$actionClass();
+        $controller->end();
+        $this->response->sendHeader();
+        $view = $this->response->render($result);
+        return $view;
     }
     public function arraytolower($result)
     {
@@ -114,37 +148,25 @@ class Simple_Dispatch
         }
         return $arr;
     }
-    public function diff($arr1, $arr2)
+    public function formatAppToFile($path, $app)
     {
-        foreach($arr1 as $k=>$v)
-        {
-            if($v != $arr2[$k]) 
-                return true;
-        }
-        return false;
+         return $path."/".$app;
     }
-    public function formatToFile($result)
+    public function formatControllerToFile($path,$controller)
     {
-        $config = Simple_Registry::get("config");
-        $controller_suffix = $config->getOption($result['app'], "controller_suffix");
-        if (empty($controller_suffix)) {
-            $controller_suffix = ".php";
-        } else {
-            $controller_suffix = "." . $controller_suffix . ".php";
-        }
-        $result_format['app'] = strtolower($result['app']);
-        $result_format['controller'] = strtolower($result['controller']) . $controller_suffix;
-        $result_format['action'] = strtolower($result['action']);
-        return $result_format;
+        return $path."/controller/".$controller . ".controller.php";
     }
-    public function formatToClass($result)
+    public function formatAppToClass($app)
     {
-        $config = Simple_Registry::get("config");
-        $controller_suffix = $config->getOption($result['app'], "controller_suffix");
-        $action_suffix = $config->getOption($result['app'], "action_suffix");
-        $result_format['app'] = strtolower($result['app']);
-        $result_format['controller'] = ucfirst(strtolower($result['controller'])) . ucfirst($controller_suffix);
-        $result_format['action'] = ucfirst(strtolower($result['action'])) . ucfirst($action_suffix);
-        return $result_format;
+        return $result['app'];
     }
+    public function formatControllerToClass($controller)
+    {
+        return ucfirst($controller) . "Controller";
+    }
+    public function formatActionToClass($action)
+    {
+        return ucfirst($action) . "Action";
+    }
+
 }

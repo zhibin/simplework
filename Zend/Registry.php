@@ -14,9 +14,9 @@
  *
  * @category   Zend
  * @package    Zend_Registry
- * @copyright  Copyright (c) 2005-2011 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2009 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Registry.php 23775 2011-03-01 17:25:24Z ralph $
+ * @version    $Id: Registry.php 16207 2009-06-21 19:17:51Z thomas $
  */
 
 /**
@@ -24,16 +24,16 @@
  *
  * @category   Zend
  * @package    Zend_Registry
- * @copyright  Copyright (c) 2005-2011 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2009 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Simple_Registry extends ArrayObject
+class Zend_Registry extends ArrayObject
 {
     /**
      * Class name of the singleton registry object.
      * @var string
      */
-    private static $_registryClassName = 'Simple_Registry';
+    private static $_registryClassName = 'Zend_Registry';
 
     /**
      * Registry object provides storage for shared objects.
@@ -63,10 +63,11 @@ class Simple_Registry extends ArrayObject
      * @return void
      * @throws Zend_Exception if registry is already initialized.
      */
-    public static function setInstance(Simple_Registry $registry)
+    public static function setInstance(Zend_Registry $registry)
     {
         if (self::$_registry !== null) {
-            throw new Simple_Exception('Registry is already initialized');
+            require_once 'Zend/Exception.php';
+            throw new Zend_Exception('Registry is already initialized');
         }
 
         self::setClassName(get_class($registry));
@@ -93,21 +94,24 @@ class Simple_Registry extends ArrayObject
      * @throws Zend_Exception if the registry is initialized or if the
      *   class name is not valid.
      */
-    public static function setClassName($registryClassName = 'Simple_Registry')
+    public static function setClassName($registryClassName = 'Zend_Registry')
     {
         if (self::$_registry !== null) {
-            throw new Simple_Exception('Registry is already initialized');
+            require_once 'Zend/Exception.php';
+            throw new Zend_Exception('Registry is already initialized');
         }
 
         if (!is_string($registryClassName)) {
-            throw new Simple_Exception("Argument is not a class name");
+            require_once 'Zend/Exception.php';
+            throw new Zend_Exception("Argument is not a class name");
         }
 
         /**
          * @see Zend_Loader
          */
         if (!class_exists($registryClassName)) {
-            throw new Simple_Exception("class not exist");
+            require_once 'Zend/Loader.php';
+            Zend_Loader::loadClass($registryClassName);
         }
 
         self::$_registryClassName = $registryClassName;
@@ -139,7 +143,8 @@ class Simple_Registry extends ArrayObject
         $instance = self::getInstance();
 
         if (!$instance->offsetExists($index)) {
-            throw new Simple_Exception("No entry is registered for key '$index'");
+            require_once 'Zend/Exception.php';
+            throw new Zend_Exception("No entry is registered for key '$index'");
         }
 
         return $instance->offsetGet($index);
@@ -162,18 +167,7 @@ class Simple_Registry extends ArrayObject
         $instance = self::getInstance();
         $instance->offsetSet($index, $value);
     }
-	public static function loader($index, $param=array())
-	{
-		 $instance = self::getInstance();
-		
-		 if(!$instance->offsetExists($index.$param['key']))
-		 {
-			$value = new $index();
-			$value->loader($param);
-			self::set($index.$param['key'], $value);
-		 }
-		 return self::get($index.$param['key']);
-	}
+
     /**
      * Returns TRUE if the $index is a named value in the registry,
      * or FALSE if $index was not found in the registry.
@@ -213,4 +207,3 @@ class Simple_Registry extends ArrayObject
     }
 
 }
-

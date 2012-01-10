@@ -25,11 +25,12 @@ class Simple_Rewrite
     }
     public function getRouter($map)
     {
-        $config = Simple_Registry::get("config");
-        if (! in_array($map[0], $config->application)) {
+      
+        $config = Zend_Registry::get("config");
+        if (! array_key_exists($map[0], $config->app->toArray())) {
             throw new Simple_Exception("{$map[0]} not find");
         }
-        $router = $this->routers[$config->getOption($map[0], 'router_url')];
+        $router = $this->routers[$config->app->{$map[0]}->router];
         return $router;
     }
 }

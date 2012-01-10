@@ -1,5 +1,5 @@
 <?php
-class usersEntity  extends Entity 
+class usersEntity
 {
   
     public static function getUser()
