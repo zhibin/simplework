@@ -1,12 +1,11 @@
 <?php
 class Simple_View
 {
-    public $params;
+    public $params = array();
     public $template;
     public $response;
-    public function __construct($template, $params = array(), $response)
+    public function __construct($template, $response)
     {
-        $this->params = $params;
         $this->template = $template;
         $this->response = $response;
     }
@@ -20,12 +19,29 @@ class Simple_View
     }
     public function __get($key)
     {
-        $view = $this->params[$key];
-        if ($view instanceof Simple_View) {
-            $this->params[$key]->render();
-        } else {
-            return $this->params[$key];
+        
+        if(array_key_exists($key, $this->params))
+        {
+            $value = $this->params[$key];
         }
+        else if(array_key_exists($key, $this->response->params))
+        {
+             $value = $this->response->params[$key];
+        }
+        else if(array_key_exists($key, $this->response->contexts))
+        {
+            $value = $this->response->contexts[$key];
+        }
+        else 
+        {
+            $value = "";
+        }
+        if ($value instanceof Simple_View) {
+            $value->render();
+        } else {
+            return $value;
+        } 
+        
     }
     public function action($map)
     {

@@ -26,4 +26,8 @@ class Simple_Request
     {
         return $_SERVER['REQUEST_URI'];
     }
+    public function getHost()
+    {
+        return $_SERVER['HTTP_HOST'];
+    }
 }

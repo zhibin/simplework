@@ -4,25 +4,32 @@ class Simple_Dispatch
     public $request;
     public $response;
     public $rewrite;
+    public $front;
     public function __construct($request, $response, $rewrite)
     {
         $this->request = $request;
         $this->response = $response;
         $this->rewrite = $rewrite;
     }
-    public function start()
+    public function start($front)
     {
+        $this->front = $front;
         $this->response->getDispatch($this);
+        $this->front->routeStartup();
         $this->rewrite->analysis();
         $result = $this->rewrite->getResult();
-        ob_start();
+        $result = $this->arraytolower($result);
+        
+        $this->front->routeShutdown($result);
+        $this->front->dispatchLoopStartup($result);
         $this->app($result);
+        $this->front->dispatchLoopShutdown($result);
     }
     public function app($result)
     {
-        $result = $this->arraytolower($result);
+        
         $this->response->clear();
-         
+        
         if(empty($result['app']) || empty($result['controller']) || empty($result['action']))
         {
             throw new Simple_Exception("empty!");
@@ -99,7 +106,7 @@ class Simple_Dispatch
             	exit;
             }
         }
-   
+        $this->front->preDispatch($result);
         $controller = new $controllerClass($result, $this->request, $this->response);
         $actionClass = $this->formatActionToClass($result['action']);
         
@@ -137,6 +144,7 @@ class Simple_Dispatch
         
         $controller->$actionClass();
         $controller->end();
+        $this->front->postDispatch($result);
         $this->response->sendHeader();
         $view = $this->response->render($result);
         return $view;

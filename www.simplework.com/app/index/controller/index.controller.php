@@ -7,7 +7,7 @@ class IndexController extends Simple_Controller
         $layout->name = "hello";
         $layout->header = $this->response->dispatch(array("app" => "index" , "controller" => "index" , "action" => "abc"));
         echo $layout->getUrl(array("index" , "index" , "def" , array("d" => 1)));
-       
+       echo $this->request->getHost();
 $simple_db= Simple_Db_Mysql::getInstance();
 $sql = "select * from books_author";
  $row = $simple_db->fetchAll($sql);

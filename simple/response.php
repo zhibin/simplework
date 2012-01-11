@@ -1,7 +1,7 @@
 <?php
 class Simple_Response
 {
-    private $params = array();
+    public $params = array();
     public $isrender = true;
     public $dispatch = null;
     public $headers = array();
@@ -33,8 +33,8 @@ class Simple_Response
     public function setLayout($name, $app)
     {
         $config = Zend_Registry::get("config");
-        $layout_home_path = $config->app_home .'/'.$config->app_dir. '/' . $app . '/layout';
-        $layout = new Simple_Layout($layout_home_path . "/" . $name, array(), $this);
+        $layout_home_path = $config->app_home .'/'.$config->app_dir. '/' . $app . '/view/layout';
+        $layout = new Simple_Layout($layout_home_path . "/" . $name, $this);
         $this->isrender = false;
         return $layout;
     }
@@ -53,7 +53,7 @@ class Simple_Response
         {
             throw new Simple_Exception("$defaulttemplate not find");
         }
-        $view = new Simple_View($defaulttemplate, $this->params, $this);
+        $view = new Simple_View($defaulttemplate, $this);
         if ($this->isrender) {
             $view->render();
         }

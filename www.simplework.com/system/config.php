@@ -3,9 +3,9 @@ return array(
 "app_dir"=>"app",
 "autoload_file"=>"system/~autoload.php",
 "autoload_dirs"=>array("entity", "lib"),
+"plugin_dir"=>"plugin",
 "home_page"=>array("app"=>"index","controller"=>"index", "action"=>"index"),
 "error_page"=>array("app"=>"index","controller"=>"index", "action"=>"error"),
-
 "database"=>array("type"=>"Pdo_Mysql",
                    		"db"=>array("master"=>array("db_host"=>"127.0.0.1",
                                                     "db_user"=>"root",
@@ -28,14 +28,15 @@ return array(
                                                     )
 
                     ),
+
 "app"=>array("index"=>array(
-                             "domain"=>"",
-                             "home_page"=>array("app"=>"index","controller"=>"index", "action"=>"index"),
                              "error_page"=>array("app"=>"index","controller"=>"index", "action"=>"error1"),
                              "router"=>"Simple_Router",
                      ),
                     
 			  "admin"=>array(
-                     ))
+                     
+                     )
+           )
 );
 ?>
