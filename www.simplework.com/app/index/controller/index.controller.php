@@ -13,7 +13,10 @@ $sql = "select * from books_author";
  $row = $simple_db->fetchAll($sql);
     print_r($row);
         $layout->render();
-      
+        $a = Users::getById(1);
+        print_r($a->row);
+      $e = Users::getByName('admin');
+      print_r($e->row);
     }
     public function DefAction()
     {

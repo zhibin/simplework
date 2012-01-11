@@ -12,7 +12,8 @@ class Simple_Db_Zend_Mysqli
         if(!array_key_exists($key, self::$handles))
         {
             $mysql = new self();
-            self::$handles[$key] = $mysql->init($params);
+            $mysql->init($params);
+            self::$handles[$key] = $mysql;
             
         }
         return self::$handles[$key];

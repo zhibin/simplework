@@ -55,7 +55,7 @@ class Simple_Front
             }
         }
     }
-    function searchPlugin($path, $pattern = "") 
+    public function searchPlugin($path, $pattern = "") 
     {
         $filelist = array();
         foreach (scandir($path) as $file) 

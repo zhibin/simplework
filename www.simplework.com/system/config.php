@@ -2,7 +2,7 @@
 return array(
 "app_dir"=>"app",
 "autoload_file"=>"system/~autoload.php",
-"autoload_dirs"=>array("entity", "lib"),
+"autoload_dirs"=>array("entity"),
 "plugin_dir"=>"plugin",
 "home_page"=>array("app"=>"index","controller"=>"index", "action"=>"index"),
 "error_page"=>array("app"=>"index","controller"=>"index", "action"=>"error"),
