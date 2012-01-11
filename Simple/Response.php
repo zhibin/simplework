@@ -34,7 +34,12 @@ class Simple_Response
     {
         $config = Zend_Registry::get("config");
         $layout_home_path = $config->app_home .'/'.$config->app_dir. '/' . $app . '/view/layout';
-        $layout = new Simple_Layout($layout_home_path . "/" . $name, $this);
+        $layout_template = $layout_home_path."/".$name;
+        if(!file_exists($layout_template))
+        {
+            throw new Simple_Exception("$defaulttemplate not find");
+        }
+        $layout = new Simple_Layout($layout_template, $this);
         $this->isrender = false;
         return $layout;
     }
@@ -44,16 +49,16 @@ class Simple_Response
         $view_home_path = $config->app_home .'/'.$config->app_dir. '/' . $map['app'] . '/view';
         $template = $this->template;
         if (! empty($template)) {
-            $defaulttemplate = $view_home_path . $template;
+            $default_template = $view_home_path . $template;
         } else {
             $tpl_name = $map['action'];
-            $defaulttemplate = $view_home_path . '/' . $tpl_name . ".view.htm";
+            $default_template = $view_home_path . '/' . $tpl_name . ".view.htm";
         }
-        if(!file_exists($defaulttemplate))
+        if(!file_exists($default_template))
         {
-            throw new Simple_Exception("$defaulttemplate not find");
+            throw new Simple_Exception("$default_template not find");
         }
-        $view = new Simple_View($defaulttemplate, $this);
+        $view = new Simple_View($default_template, $this);
         if ($this->isrender) {
             $view->render();
         }
