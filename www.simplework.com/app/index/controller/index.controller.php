@@ -9,14 +9,15 @@ class IndexController extends Simple_Controller
         echo $layout->getUrl(array("index" , "index" , "def" , array("d" => 1)));
        echo $this->request->getHost();
 $simple_db= Simple_Db_Mysql::getInstance();
-$sql = "select * from books_author";
- $row = $simple_db->fetchAll($sql);
-    print_r($row);
+//$sql = "select * from books_author";
+// $row = $simple_db->fetchAll($sql);
+//    print_r($row);
         $layout->render();
-        $a = Users::getById(1);
-        print_r($a->row);
-      $e = Users::getByName('admin');
-      print_r($e->row);
+      $row['password']= "123456";
+      $a = Users::getById(109870);
+       $a->password = "7777777777";
+        Simple_Db_Unitofwork::getInstance()->commit();
+      print_r($a->row);
     }
     public function DefAction()
     {

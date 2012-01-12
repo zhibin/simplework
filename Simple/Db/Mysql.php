@@ -64,5 +64,17 @@ class Simple_Db_Mysql
     {
         return $this->db_slave->fetchAll($sql, $bind);
     }
+    public function query($sql , $bind=array())
+    {
+         return $this->db_master->query($sql, $bind); 
+    }
+    public function update($sql, $bind=array())
+    {
+        return $this->query($sql, $bind); 
+    }
+    public function insert($sql, $bind=array())
+    {
+        return $this->query($sql, $bind); 
+    }
 }
 ?>

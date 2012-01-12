@@ -48,5 +48,10 @@ class Simple_Db_Zend_Mysqli
     {
        return $this->db->fetchAll($sql, $bind);
     }
+    public function query($sql, $bind=array())
+    {
+         $stmt = $this->db->query($sql, $bind);
+         return $stmt->rowCount();
+    }
 }
 ?>
