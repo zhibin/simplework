@@ -19,29 +19,20 @@ class Simple_View
     }
     public function __get($key)
     {
-        
-        if(array_key_exists($key, $this->params))
-        {
+        if (array_key_exists($key, $this->params)) {
             $value = $this->params[$key];
-        }
-        else if(array_key_exists($key, $this->response->params))
-        {
-             $value = $this->response->params[$key];
-        }
-        else if(array_key_exists($key, $this->response->contexts))
-        {
+        } else if (array_key_exists($key, $this->response->params)) {
+            $value = $this->response->params[$key];
+        } else if (array_key_exists($key, $this->response->contexts)) {
             $value = $this->response->contexts[$key];
-        }
-        else 
-        {
+        } else {
             $value = "";
         }
         if ($value instanceof Simple_View) {
             $value->render();
         } else {
             return $value;
-        } 
-        
+        }
     }
     public function action($map)
     {
