@@ -15,8 +15,9 @@ class IndexController extends Simple_Controller
         $layout->render();
         $row['password'] = "123456";
         $a = Users::getById(109870);
+        $b= Users::getByName("rrrrrrr");
         echo $a->password;
-        $a->password = "7777777777";
+        $a->password = "33333333";
         Simple_Db_Unitofwork::getInstance()->commit();
         print_r($a->row);
     }

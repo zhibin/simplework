@@ -6,6 +6,7 @@ return array(
 "plugin_dir"=>"plugin",
 "home_page"=>array("app"=>"index","controller"=>"index", "action"=>"index"),
 "error_page"=>array("app"=>"index","controller"=>"index", "action"=>"error"),
+"unitofwork"=>"strict",
 "database"=>array("type"=>"Mysqli",
                    		"db"=>array("master"=>array("db_host"=>"127.0.0.1",
                                                     "db_user"=>"root",

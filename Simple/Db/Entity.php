@@ -44,7 +44,6 @@ class Simple_Db_Entity
     }
     public function getOne($where = "", $bind = array())
     {
-        
         $unitofwork = Simple_Db_Unitofwork::getInstance();
         $sql = $this->getSelectSql($where);
         $row = $unitofwork->db->fetch($sql, $bind);
@@ -54,6 +53,13 @@ class Simple_Db_Entity
                 $this->row = $row;
                 $unitofwork->register($this);
                 return $this;
+            } else {
+                $config = Zend_Registry::get("config");
+                if ($config->unitofwork == 'strict') {
+                    if ($row['version'] > $entity->row['version']) {
+                        throw new Simple_Exception("unitofwork not getOne select  empty not success! version check clash", 1);
+                    }
+                }
             }
             return $entity;
         }
@@ -74,6 +80,13 @@ class Simple_Db_Entity
                     $this->row = $row;
                     $unitofwork->register($this);
                     $entity = $this;
+                } else {
+                    $config = Zend_Registry::get("config");
+                    if ($config->unitofwork == 'strict') {
+                        if ($row['version'] > $entity->row['version']) {
+                            throw new Simple_Exception("unitofwork not getOne select  empty not success! version check clash", 1);
+                        }
+                    }
                 }
                 $entitys[] = $entity;
             }
@@ -104,7 +117,6 @@ class Simple_Db_Entity
             if ($this->row[$name] !== $value) {
                 $this->row[$name] = $value;
                 if (! $this->iscreate) {
-                    // $this->updatestack['id'] = $this->row['id'];
                     $this->updatestack[$name] = $value;
                 }
             }
@@ -113,17 +125,23 @@ class Simple_Db_Entity
     public function __get($name)
     {
         if ($this->isdelete) {
-            return '';
+            return null;
         }
         if (in_array($name, $this->column)) {
             if ($this->row[$name] === null) {
-                $this->default_select_column = array('id', 'version', $name);
+                $this->default_select_column = array('id' , 'version' , $name);
                 $sql = $this->getSelectSql("id = {$this->row['id']}");
                 $unitofwork = Simple_Db_Unitofwork::getInstance();
                 $row = $unitofwork->db->fetch($sql);
-                if(empty($row) || $row['version'] > $this->row['version'])
-                {
-                    throw  new Simple_Exception("unitofwork not _get select not success! version check clash",1);
+                $config = Zend_Registry::get("config");
+                if ($config->unitofwork == 'strict') {
+                    if (empty($row)) {
+                        throw new Simple_Exception("unitofwork not _get select  empty not success! version check clash", 1);
+                    } else {
+                        if ($row['version'] > $this->row['version']) {
+                            throw new Simple_Exception("unitofwork not _get select  version not success! version check clash", 1);
+                        }
+                    }
                 }
                 $this->row[$name] = $row[$name];
                 return $this->row[$name];
@@ -151,19 +169,14 @@ class Simple_Db_Entity
     public function getSelectSql($where)
     {
         $default_select_column = $this->default_select_column;
-        if(empty($default_select_column))
-        {
+        if (empty($default_select_column)) {
             $select_column = "*";
-        }
-        else
-        {
-            if(!in_array("id", $default_select_column))
-            {
+        } else {
+            if (! in_array("id", $default_select_column)) {
                 $default_select_column[] = 'id';
             }
-            if(!in_array('version', $default_select_column))
-            {
-                 $default_select_column[] = 'version';
+            if (! in_array('version', $default_select_column)) {
+                $default_select_column[] = 'version';
             }
             $select_column = implode(',', $default_select_column);
         }
