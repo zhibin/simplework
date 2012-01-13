@@ -117,7 +117,8 @@ class Simple_Db_Entity
         }
         if (in_array($name, $this->column)) {
             if ($this->row[$name] === null) {
-                $sql = "select id, version, $name  from {$this->table} where id = {$this->row['id']}";
+                $this->default_select_column = array('id', 'version', $name);
+                $sql = $this->getSelectSql("id = {$this->row['id']}");
                 $unitofwork = Simple_Db_Unitofwork::getInstance();
                 $row = $unitofwork->db->fetch($sql);
                 if(empty($row) || $row['version'] > $this->row['version'])
