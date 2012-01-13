@@ -11,6 +11,11 @@ class Users extends Simple_Db_Entity
 					);
 					
 	public $table = "users";
+	public $default_select_column = 
+	            array("id",
+					"version",
+				    "password",
+					"ctime");
 	public static function createBy($row)
 	{
 	     $entity = new self();
@@ -20,6 +25,7 @@ class Users extends Simple_Db_Entity
     public static function getById($id)
     {
        $entity = new self();
+       $entity->default_select_column = array('id');
        $entity = $entity->getByIndex($id);
        return $entity;
     }
@@ -27,8 +33,8 @@ class Users extends Simple_Db_Entity
     {
       
        $entity = new self();
-       $sql = "select * from {$entity->table} where username='$name'";
-       $entity = $entity->getOne($sql);
+       $where = "username='$name'";
+       $entity = $entity->getOne($where);
        return $entity;
     }
 }

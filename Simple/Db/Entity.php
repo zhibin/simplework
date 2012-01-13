@@ -6,6 +6,7 @@ class Simple_Db_Entity
     private $iscreate = false;
     private $isdelete = false;
     private $updatestack = array();
+    protected $default_select_column = array();
     public function __construct()
     {}
     public function getKey()
@@ -23,7 +24,8 @@ class Simple_Db_Entity
         $key = $id . "_" . $this->table;
         $entity = $unitofwork->get($key);
         if (empty($entity)) {
-            $row = $unitofwork->db->fetch("select * from  {$this->table} where id =$id");
+            $sql = $this->getSelectSql("id =$id");
+            $row = $unitofwork->db->fetch($sql);
             if (! empty($row)) {
                 $this->setKey($row['id']);
                 $this->row = $row;
@@ -40,9 +42,11 @@ class Simple_Db_Entity
             return true; else
             return false;
     }
-    public function getOne($sql, $bind = array())
+    public function getOne($where, $bind = array())
     {
+        
         $unitofwork = Simple_Db_Unitofwork::getInstance();
+        $sql = $this->getSelectSql($where);
         $row = $unitofwork->db->fetch($sql, $bind);
         if (! empty($row)) {
             $entity = $unitofwork->get($this->setKey($row['id']));
@@ -55,9 +59,10 @@ class Simple_Db_Entity
         }
         return $this;
     }
-    public function getAll($sql, $bind = array())
+    public function getAll($where, $bind = array())
     {
         $unitofwork = Simple_Db_Unitofwork::getInstance();
+        $sql = $this->getSelectSql($where);
         $rows = $unitofwork->db->fetchAll($sql, $bind);
         if (! empty($rows)) {
             $entitys = array();
@@ -112,9 +117,13 @@ class Simple_Db_Entity
         }
         if (in_array($name, $this->column)) {
             if ($this->row[$name] === null) {
-                $sql = "select $name from {$this->table} where {$this->column['id']} = {$this->row['id']}";
+                $sql = "select id, version, $name  from {$this->table} where id = {$this->row['id']}";
                 $unitofwork = Simple_Db_Unitofwork::getInstance();
                 $row = $unitofwork->db->fetch($sql);
+                if(empty($row) || $row['version'] > $this->row['version'])
+                {
+                    throw  new Simple_Exception("unitofwork not _get select not success! version check clash",1);
+                }
                 $this->row[$name] = $row[$name];
                 return $this->row[$name];
             } else {
@@ -137,6 +146,28 @@ class Simple_Db_Entity
         //			}
         }
         return '';
+    }
+    public function getSelectSql($where)
+    {
+        $default_select_column = $this->default_select_column;
+        if(empty($default_select_column))
+        {
+            $select_column = "*";
+        }
+        else
+        {
+            if(!in_array("id", $default_select_column))
+            {
+                $default_select_column[] = 'id';
+            }
+            if(!in_array('version', $default_select_column))
+            {
+                 $default_select_column[] = 'version';
+            }
+            $select_column = implode(',', $default_select_column);
+        }
+        $sql = "select $select_column from {$this->table} where 1=1 and  $where";
+        return $sql;
     }
     public function getInsertSql()
     {
