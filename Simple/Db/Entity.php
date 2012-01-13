@@ -42,7 +42,7 @@ class Simple_Db_Entity
             return true; else
             return false;
     }
-    public function getOne($where, $bind = array())
+    public function getOne($where = "", $bind = array())
     {
         
         $unitofwork = Simple_Db_Unitofwork::getInstance();
@@ -59,7 +59,7 @@ class Simple_Db_Entity
         }
         return $this;
     }
-    public function getAll($where, $bind = array())
+    public function getAll($where = "", $bind = array())
     {
         $unitofwork = Simple_Db_Unitofwork::getInstance();
         $sql = $this->getSelectSql($where);
@@ -180,7 +180,7 @@ class Simple_Db_Entity
                     $vals[] = "'" . $val . "'";
                 }
             }
-            $sql = "INSERT INTO " . $this->table . ' (' . implode(', ', $set) . ') ' . 'VALUES (' . implode(', ', $vals) . ')';
+            $sql = "insert into " . $this->table . ' (' . implode(', ', $set) . ') ' . 'values (' . implode(', ', $vals) . ')';
             return $sql;
         }
     }
@@ -211,7 +211,7 @@ class Simple_Db_Entity
                     $set[] = "$col = '" . $val . "'";
                 }
             }
-            $sql = "UPDATE " . $this->table . ' SET ' . implode(',', $set) . (($where) ? " WHERE $where" : '');
+            $sql = "update " . $this->table . ' set ' . implode(',', $set) . (($where) ? " where $where" : '');
             return $sql;
         }
     }

@@ -1,7 +1,6 @@
 <?php
 class Users extends Simple_Db_Entity
 {
-    const email_empty = 2;
     public   $column =array(
 					"id",
 					"version",
