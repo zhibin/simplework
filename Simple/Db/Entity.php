@@ -149,7 +149,7 @@ class Simple_Db_Entity
                 return $this->row[$name];
             }
         } else {
-            $map = $this->getJoinMap();
+            $map = $this->beLongToMap();
             if (array_key_exists($name, $map)) {
                 $entity = $map[$name]['entity'];
                 $param = $map[$name]['param'];
@@ -229,7 +229,7 @@ class Simple_Db_Entity
             return $sql;
         }
     }
-    public function getJoinMap()
+    public function beLongToMap()
     {
         return array();
     }

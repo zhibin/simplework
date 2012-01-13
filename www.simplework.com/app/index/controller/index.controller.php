@@ -18,8 +18,17 @@ class IndexController extends Simple_Controller
         $b= Users::getByName("rrrrrrr");
         echo $a->password;
         $a->password = "33333333";
+        
+        
+         $join = Simple_Db_Join::create(array("Articles", "Directorys"))
+         ->select("Articles.id as a ,Directorys.id as b")
+         ->fromto("Articles")
+         ->join("Directorys")
+         ->on("Articles.directoryid = Directorys.id")
+         ->end();
+        
+        
         Simple_Db_Unitofwork::getInstance()->commit();
-        print_r($a->row);
     }
     public function DefAction()
     {
