@@ -89,26 +89,31 @@ class Simple_Db_Join
         $sql .= " on " . $on;
         $row = Simple_Db_Mysql::getInstance()->fetchAll($sql);
         $this->row = $row;
-        foreach ($this->row as $k => $v) {
-            foreach ($v as $kk => $vv) {
-                $map = $this->map[$kk];
-                $name = $map['name'];
-                $entity = $map['entity'];
-                $id = $v[$name . "_id"];
-                $version = $v[$name . "_version"];
-                $entity = $entity->buildByIndex($id, $version);
-                $cloumn = $map['cloumn'];
-                if ($entity->exists($cloumn)) {
-                    $this->row[$k][$kk] = $entity->$cloumn;
-                } else {
-                    $entity->setRow($cloumn, $vv);
-                }
-                if (array_key_exists($name, $this->entity_map) && empty($this->entity_row[$name][$k])) {
-                    $this->entity_row[$name][$k] = $entity;
+        $this->joinToEntity($row);
+        return $this;
+    }
+    public function joinToEntity()
+    {
+        if (! empty($this->row))
+            foreach ($this->row as $k => $v) {
+                foreach ($v as $kk => $vv) {
+                    $map = $this->map[$kk];
+                    $name = $map['name'];
+                    $entity = $map['entity'];
+                    $id = $v[$name . "_id"];
+                    $version = $v[$name . "_version"];
+                    $entity = $entity->buildByIndex($id, $version);
+                    $cloumn = $map['cloumn'];
+                    if ($entity->exists($cloumn)) {
+                        $this->row[$k][$kk] = $entity->$cloumn;
+                    } else {
+                        $entity->setRow($cloumn, $vv);
+                    }
+                    if (array_key_exists($name, $this->entity_map) && empty($this->entity_row[$name][$k])) {
+                        $this->entity_row[$name][$k] = $entity;
+                    }
                 }
             }
-        }
-        return $this;
     }
     public function fetchAllRow()
     {
