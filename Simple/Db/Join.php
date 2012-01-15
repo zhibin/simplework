@@ -2,10 +2,13 @@
 class Simple_Db_Join
 {
     public $entitys = array();
+    public $entity_map = array();
     public $map;
     public $from;
     public $join;
     public $on;
+    public $row;
+    public $entity_row = array();
     public function __construct($entitys = array())
     {
         foreach ($entitys as $k => $v) {
@@ -23,12 +26,11 @@ class Simple_Db_Join
             foreach ($select_arr as $k => $v) {
                 $as_arr = explode("as", $v); //t1.id as a
                 $cloumn_arr = explode(".", $as_arr[0]); //t1.id
-                $map[trim($as_arr[1])]['name'] = $cloumn_arr[0];
-                $map[trim($as_arr[1])]['cloumn'] = $cloumn_arr[1];
+                $map[trim($as_arr[1])]['name'] = trim($cloumn_arr[0]);
+                $map[trim($as_arr[1])]['cloumn'] = trim($cloumn_arr[1]);
             }
         }
         $this->map = $map;
-        print_r($map);
         return $this;
     }
     public function fromto($from)
@@ -64,20 +66,57 @@ class Simple_Db_Join
                     $select_arr[] = $select_cloumn . " as " . $m;
                 }
             }
+            $this->entity_map[$k][] = 'id';
+            $this->map[$k . '_id']['name'] = $k;
+            $this->map[$k . '_id']['cloumn'] = 'id';
+            $this->map[$k . '_id']['entity'] = $v;
+            $this->map[$k . '_id']['select'] = $v->table . ".id";
+            $select_arr[] = $v->table . ".id" . " as " . $k . '_id';
+            $this->entity_map[$k][] = 'version';
+            $this->map[$k . '_version']['name'] = $k;
+            $this->map[$k . '_version']['cloumn'] = 'version';
+            $this->map[$k . '_version']['entity'] = $v;
+            $this->map[$k . '_version']['select'] = $v->table . ".version";
+            $select_arr[] = $v->table . ".version" . " as " . $k . '_version';
             $from = str_replace($k, $v->table, $from);
             $join = str_replace($k, $v->table, $join);
             $on = str_replace($k, $v->table, $on);
         }
         $select = implode(",", $select_arr);
-        print_r($this->map);
         $sql .= $select;
         $sql .= " from " . $from;
         $sql .= " left join " . $join;
         $sql .= " on " . $on;
-        echo $sql;
         $row = Simple_Db_Mysql::getInstance()->fetchAll($sql);
+        $this->row = $row;
+        foreach ($this->row as $k => $v) {
+            foreach ($v as $kk => $vv) {
+                $map = $this->map[$kk];
+                $name = $map['name'];
+                $entity = $map['entity'];
+                $id = $v[$name . "_id"];
+                $version = $v[$name . "_version"];
+                $entity = $entity->buildByIndex($id, $version);
+                $cloumn = $map['cloumn'];
+                if ($entity->exists($cloumn)) {
+                    $this->row[$k][$kk] = $entity->$cloumn;
+                } else {
+                    $entity->setRow($cloumn, $vv);
+                }
+                if (array_key_exists($name, $this->entity_map) && empty($this->entity_row[$name][$k])) {
+                    $this->entity_row[$name][$k] = $entity;
+                }
+            }
+        }
         return $this;
-        print_r($row);
+    }
+    public function fetchAllRow()
+    {
+        return $this->row;
+    }
+    public function filterEntity($name)
+    {
+        return $this->entity_row[$name];
     }
 }
 ?>

@@ -4,6 +4,7 @@ class Articles extends Simple_Db_Entity
     public   $column =array(
 					"id",
 					"version",
+                    "title",
 					"directoryid",
 					"mtime",
 					);

@@ -18,12 +18,37 @@ class Simple_Db_Entity
         $this->key = $id . '_' . $this->table;
         return $this->key;
     }
-    public function getByIndex($id)
+    public function buildByIndex($id, $version)
     {
         $unitofwork = Simple_Db_Unitofwork::getInstance();
         $key = $id . "_" . $this->table;
         $entity = $unitofwork->get($key);
         if (empty($entity)) {
+            $name = get_class($this);
+            $entity = new $name();
+            $entity->setKey($id);
+            $entity->row['id'] = $id;
+            $entity->row['version'] = $version;
+            $unitofwork->register($entity);
+            return $entity;
+        }
+        return $entity;
+    }
+    public function exists($name)
+    {
+        if ($this->row[$name] === null)
+            return false; else
+            return true;
+    }
+    public function setRow($name, $value)
+    {
+        $this->row[$name] = $value;
+    }
+    public function getByIndex($id)
+    {
+        $unitofwork = Simple_Db_Unitofwork::getInstance();
+        $key = $id . "_" . $this->table;
+        if (! $unitofwork->exists($key)) {
             $sql = $this->getSelectSql("id =$id");
             $row = $unitofwork->db->fetch($sql);
             if (! empty($row)) {
@@ -33,8 +58,10 @@ class Simple_Db_Entity
                 return $this;
             }
             return $this;
+        } else {
+            $entity = $unitofwork->get($key);
+            return $entity;
         }
-        return $entity;
     }
     public function isEmpty()
     {
@@ -48,20 +75,21 @@ class Simple_Db_Entity
         $sql = $this->getSelectSql($where);
         $row = $unitofwork->db->fetch($sql, $bind);
         if (! empty($row)) {
-            $entity = $unitofwork->get($this->setKey($row['id']));
-            if (empty($entity)) {
+            $key = $row['id'] . '_' . $this->table;
+            if (! $unitofwork->exists($key)) {
                 $this->row = $row;
                 $unitofwork->register($this);
                 return $this;
             } else {
+                $entity = $unitofwork->get($key);
                 $config = Zend_Registry::get("config");
                 if ($config->unitofwork == 'strict') {
                     if ($row['version'] > $entity->row['version']) {
                         throw new Simple_Exception("unitofwork not getOne select  empty not success! version check clash", 1);
                     }
                 }
+                return $entity;
             }
-            return $entity;
         }
         return $this;
     }
@@ -74,13 +102,13 @@ class Simple_Db_Entity
             $entitys = array();
             foreach ($rows as $k => $row) {
                 $key = $row['id'] . "_" . $this->table;
-                $entity = $unitofwork->get($key);
-                if (empty($entity)) {
+                if (! $unitofwork->exists($key)) {
                     $this->setKey($row['id']);
                     $this->row = $row;
                     $unitofwork->register($this);
                     $entity = $this;
                 } else {
+                    $entity = $unitofwork->get($key);
                     $config = Zend_Registry::get("config");
                     if ($config->unitofwork == 'strict') {
                         if ($row['version'] > $entity->row['version']) {
@@ -113,10 +141,10 @@ class Simple_Db_Entity
     }
     public function __set($name, $value)
     {
-        if (in_array($name, $this->column) && ! $this->isdelete) {
+        if (! $this->isdelete) {
             if ($this->row[$name] !== $value) {
                 $this->row[$name] = $value;
-                if (! $this->iscreate) {
+                if (! $this->iscreate && in_array($name, $this->column)) {
                     $this->updatestack[$name] = $value;
                 }
             }
@@ -156,6 +184,8 @@ class Simple_Db_Entity
                 $relation = new $entity();
                 $relation = $relation->getByIndex($this->$param);
                 return $relation;
+            } else {
+                return $this->row[$name];
             }
             //			else if(array_key_exists($name , $sql)) select * from aritcle where id =$this->id;
         //			{

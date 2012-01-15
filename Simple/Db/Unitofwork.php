@@ -25,6 +25,17 @@ class Simple_Db_Unitofwork
     {
         return $this->lists[$key];
     }
+    public function exists($key)
+    {
+        if(array_key_exists($key, $this->lists))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
     public function makeSqllist()
     {
         if (! empty($this->lists)) {

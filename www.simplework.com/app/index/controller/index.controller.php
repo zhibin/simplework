@@ -19,15 +19,19 @@ class IndexController extends Simple_Controller
         echo $a->password;
         $a->password = "33333333";
         
-        
+        $b = Articles::getById("100020");
+        $b->title = "bbbbbbbbbb";
          $join = Simple_Db_Join::create(array("Articles", "Directorys"))
-         ->select("Articles.id as a ,Directorys.id as b")
+         ->select("Articles.id as a , Articles.title as title, Directorys.id as b")
          ->fromto("Articles")
          ->join("Directorys")
          ->on("Articles.directoryid = Directorys.id")
          ->end();
+        //$b->status=3 ; 
+        $row = $join->fetchAllRow();
+        print_r($join->filterEntity('Articles'));
         
-        
+        print_r($row);
         Simple_Db_Unitofwork::getInstance()->commit();
     }
     public function DefAction()
