@@ -3,9 +3,9 @@ class Simple_Db_Entity
 {
     private $row;
     private $key;
-    private $iscreate = false;
-    private $isdelete = false;
-    private $updatestack = array();
+    public $iscreate = false;
+    public $isdelete = false;
+    public $updatestack = array();
     protected $default_select_column = array();
     public function __construct()
     {}
@@ -137,6 +137,9 @@ class Simple_Db_Entity
         $this->setKey($id);
         $unitofwork = Simple_Db_Unitofwork::getInstance();
         $unitofwork->register($this);
+        if (! $unitofwork->existsTree(get_class($this), $this->id)) {
+            $unitofwork->setTree(get_class($this), $this);
+        }
         return $this;
     }
     public function __set($name, $value)
@@ -146,6 +149,10 @@ class Simple_Db_Entity
                 $this->row[$name] = $value;
                 if (! $this->iscreate && in_array($name, $this->column)) {
                     $this->updatestack[$name] = $value;
+                    $unitofwork = Simple_Db_Unitofwork::getInstance();
+                    if (! $unitofwork->existsTree(get_class($this), $this->id)) {
+                        $unitofwork->setTree(get_class($this), $this);
+                    }
                 }
             }
         }
@@ -231,6 +238,10 @@ class Simple_Db_Entity
     public function delete()
     {
         $this->isdelete = true;
+        $unitofwork = Simple_Db_Unitofwork::getInstance();
+        if (! $unitofwork->existsTree(get_class($this), $this->id)) {
+            $unitofwork->setTree(get_class($this), $this);
+        }
     }
     public function getDeleteSql()
     {

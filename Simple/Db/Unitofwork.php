@@ -2,6 +2,7 @@
 class Simple_Db_Unitofwork
 {
     public static $unitofwork;
+    public $updatetree = array();
     public $lists = array();
     public $db;
     public $insertlist = array();
@@ -17,6 +18,26 @@ class Simple_Db_Unitofwork
         }
         return self::$unitofwork;
     }
+    public function existsTree($class, $id)
+    {
+        if (! empty($this->updatetree[$class])) {
+            if (array_key_exists($id, $this->updatetree[$class])) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+    public function getTree($class)
+    {
+        return $this->updatetree[$class];
+    }
+    public function setTree($class, $entity)
+    {
+        $this->updatetree[$class][$entity->id] = $entity;
+    }
     public function register($entity)
     {
         $this->lists[$entity->getKey()] = $entity;
@@ -27,12 +48,9 @@ class Simple_Db_Unitofwork
     }
     public function exists($key)
     {
-        if(array_key_exists($key, $this->lists))
-        {
+        if (array_key_exists($key, $this->lists)) {
             return true;
-        }
-        else
-        {
+        } else {
             return false;
         }
     }

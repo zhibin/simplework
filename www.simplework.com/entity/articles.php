@@ -5,6 +5,8 @@ class Articles extends Simple_Db_Entity
 					"id",
 					"version",
                     "title",
+                    "status",
+                    "sign",
 					"directoryid",
 					"mtime",
 					);

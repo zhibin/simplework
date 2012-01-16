@@ -20,12 +20,26 @@ class IndexController extends Simple_Controller
         $a->password = "33333333";
         
         $b = Articles::getById("100020");
+        
         $b->title = "bbbbbbbbbb";
+        $b->status=2;
+        $c = Articles::getById("100060");
+        $c->sign=1;
          $join = Simple_Db_Join::create(array("Articles", "Directorys"))
          ->select("Articles.id as a , Articles.title as title, Directorys.id as b")
          ->fromto("Articles")
          ->join("Directorys")
          ->on("Articles.directoryid = Directorys.id")
+         ->precheck(array("Articles.sign","Articles.status"))
+         ->where("Articles.sign=1 and Articles.status=2")
+//         ->where()
+//         ->where("Articles.id","=","10001")
+//         ->or()
+//         
+//         ->and()
+//         
+//         ->and()
+         
          ->end();
         //$b->status=3 ; 
         $row = $join->fetchAllRow();

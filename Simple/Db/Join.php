@@ -8,7 +8,8 @@ class Simple_Db_Join
     public $join;
     public $on;
     public $row;
-    public $entity_row = array();
+    public $where;
+    public $bind;
     public function __construct($entitys = array())
     {
         foreach ($entitys as $k => $v) {
@@ -48,8 +49,34 @@ class Simple_Db_Join
         $this->on = $on;
         return $this;
     }
-    public function where($where)
-    {}
+    public function where($where, $bind = array())
+    {
+        foreach ($this->entitys as $k => $v) {
+            $where = str_replace($k . ".", $v->table . ".", $where);
+        }
+        $this->where = $where;
+        $this->bind = $bind;
+        return $this;
+    }
+    public function precheck($entity_cloumn)
+    {
+        if (! empty($entity_cloumn))
+            foreach ($entity_cloumn as $key => $value) {
+                $cloumn_arr = explode(".", $value);
+                $class = $cloumn_arr[0];
+                $cloumn = $cloumn_arr[1];
+                $unitofwork = Simple_Db_Unitofwork::getInstance();
+                $entity_list = $unitofwork->getTree($class);
+                if (! empty($entity_list)) {
+                    foreach ($entity_list as $k => $v) {
+                        if (($v->iscreate || array_key_exists($cloumn, $v->updatestack)) && ! $v->isdelete) {
+                            trigger_error("where update not commit db", E_WARNING);
+                        }
+                    }
+                }
+            }
+        return $this;
+    }
     public function end()
     {
         $sql = "select ";
@@ -87,7 +114,8 @@ class Simple_Db_Join
         $sql .= " from " . $from;
         $sql .= " left join " . $join;
         $sql .= " on " . $on;
-        $row = Simple_Db_Mysql::getInstance()->fetchAll($sql);
+        $sql .= " where 1=1 and " . $this->where;
+        $row = Simple_Db_Mysql::getInstance()->fetchAll($sql, $this->bind);
         $this->row = $row;
         $this->joinToEntity($row);
         return $this;
