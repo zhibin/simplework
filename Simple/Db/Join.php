@@ -2,14 +2,13 @@
 class Simple_Db_Join
 {
     public $entitys = array();
-    public $entity_map = array();
     public $map;
     public $from;
     public $join;
     public $on;
     public $row;
     public $where;
-    public $bind;
+    public $bind =array();
     public function __construct($entitys = array())
     {
         foreach ($entitys as $k => $v) {
@@ -93,13 +92,11 @@ class Simple_Db_Join
                     $select_arr[] = $select_cloumn . " as " . $m;
                 }
             }
-            $this->entity_map[$k][] = 'id';
             $this->map[$k . '_id']['name'] = $k;
             $this->map[$k . '_id']['cloumn'] = 'id';
             $this->map[$k . '_id']['entity'] = $v;
             $this->map[$k . '_id']['select'] = $v->table . ".id";
             $select_arr[] = $v->table . ".id" . " as " . $k . '_id';
-            $this->entity_map[$k][] = 'version';
             $this->map[$k . '_version']['name'] = $k;
             $this->map[$k . '_version']['cloumn'] = 'version';
             $this->map[$k . '_version']['entity'] = $v;
@@ -114,7 +111,7 @@ class Simple_Db_Join
         $sql .= " from " . $from;
         $sql .= " left join " . $join;
         $sql .= " on " . $on;
-        $sql .= " where 1=1 and " . $this->where;
+        $sql .= " where 1=1  " . $this->where;
         $row = Simple_Db_Mysql::getInstance()->fetchAll($sql, $this->bind);
         $this->row = $row;
         $this->joinToEntity($row);
@@ -137,7 +134,7 @@ class Simple_Db_Join
                     } else {
                         $entity->setRow($cloumn, $vv);
                     }
-                    if (array_key_exists($name, $this->entity_map) && empty($this->entity_row[$name][$k])) {
+                    if (array_key_exists($name, $this->entitys) && empty($this->entity_row[$name][$k])) {
                         $this->entity_row[$name][$k] = $entity;
                     }
                 }

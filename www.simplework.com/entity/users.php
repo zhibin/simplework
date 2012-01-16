@@ -32,7 +32,7 @@ class Users extends Simple_Db_Entity
     {
       
        $entity = new self();
-       $where = "username='$name'";
+       $where = "and username='$name'";
        $entity = $entity->getOne($where);
        return $entity;
     }
