@@ -31,7 +31,7 @@ class IndexController extends Simple_Controller
          ->join("Directorys")
          ->on("Articles.directoryid = Directorys.id")
        ->precheck(array("Articles.sign","Articles.status"))
-         ->where("and Articles.sign=1 and Articles.status=2")
+         ->where("Articles.sign=1 and Articles.status=2")
 //         ->where()
 //         ->where("Articles.id","=","10001")
 //         ->or()
@@ -41,11 +41,17 @@ class IndexController extends Simple_Controller
 //         ->and()
          
          ->end();
+         $update = Simple_Db_Update::create("Articles")
+         ->percheck(array('Articles.sign'))
+         ->where("status=1")
+         
+         ->set(array("sign"=>3))
+         ->end();
         //$b->status=3 ; 
         $row = $join->fetchAllRow();
-        print_r($join->filterEntity('Articles'));
-        
-        print_r($row);
+//        print_r($join->filterEntity('Articles'));
+//        
+//        print_r($row);
         Simple_Db_Unitofwork::getInstance()->commit();
     }
     public function DefAction()

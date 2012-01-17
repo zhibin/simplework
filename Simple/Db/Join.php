@@ -8,7 +8,7 @@ class Simple_Db_Join
     public $on;
     public $row;
     public $where;
-    public $bind =array();
+    public $bind = array();
     public function __construct($entitys = array())
     {
         foreach ($entitys as $k => $v) {
@@ -69,7 +69,7 @@ class Simple_Db_Join
                 if (! empty($entity_list)) {
                     foreach ($entity_list as $k => $v) {
                         if (($v->iscreate || array_key_exists($cloumn, $v->updatestack)) && ! $v->isdelete) {
-                            trigger_error("where update not commit db", E_WARNING);
+                            trigger_error("where update not commit db", E_USER_WARNING);
                         }
                     }
                 }
@@ -111,7 +111,7 @@ class Simple_Db_Join
         $sql .= " from " . $from;
         $sql .= " left join " . $join;
         $sql .= " on " . $on;
-        $sql .= " where 1=1  " . $this->where;
+        $sql .= (($this->where) ? " where  " . $this->where : '');
         $row = Simple_Db_Mysql::getInstance()->fetchAll($sql, $this->bind);
         $this->row = $row;
         $this->joinToEntity($row);

@@ -49,7 +49,7 @@ class Simple_Db_Entity
         $unitofwork = Simple_Db_Unitofwork::getInstance();
         $key = $id . "_" . $this->table;
         if (! $unitofwork->exists($key)) {
-            $sql = $this->getSelectSql("and id =$id");
+            $sql = $this->getSelectSql("id =$id");
             $row = $unitofwork->db->fetch($sql);
             if (! empty($row)) {
                 $this->setKey($row['id']);
@@ -165,7 +165,7 @@ class Simple_Db_Entity
         if (in_array($name, $this->column)) {
             if ($this->row[$name] === null) {
                 $this->default_select_column = array('id' , 'version' , $name);
-                $sql = $this->getSelectSql("and id = {$this->row['id']}");
+                $sql = $this->getSelectSql("id = {$this->row['id']}");
                 $unitofwork = Simple_Db_Unitofwork::getInstance();
                 $row = $unitofwork->db->fetch($sql);
                 $config = Zend_Registry::get("config");
@@ -217,7 +217,7 @@ class Simple_Db_Entity
             }
             $select_column = implode(',', $default_select_column);
         }
-        $sql = "select $select_column from {$this->table} where 1=1   $where";
+        $sql = "select $select_column from {$this->table}" . (($where) ? " where  $where" : '');
         return $sql;
     }
     public function getInsertSql()
