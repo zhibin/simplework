@@ -28,9 +28,20 @@ class Simple_Rewrite
       
         $config = Zend_Registry::get("config");
         if (! array_key_exists($map[0], $config->app->toArray())) {
-            throw new Simple_Exception("{$map[0]} not find");
+            $router = $this->routers['Simple_Router'];
+            
         }
-        $router = $this->routers[$config->app->{$map[0]}->router];
+        else 
+        {
+        	if(!empty($config->app->{$map[0]}->router))
+        	{
+        		$router = $this->routers[$config->app->{$map[0]}->router];
+        	}
+        	else 
+        	{
+        		 $router = $this->routers['Simple_Router'];
+        	}
+        }
         return $router;
     }
 }
