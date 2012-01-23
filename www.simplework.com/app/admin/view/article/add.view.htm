@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="/css/managecp.css" type="text/css" media="all" />
+<title>Insert title here</title>
+</head>
+<body>
+<div class="container">
+<?php if($this->type == "success"){?>
+	<div class="correctmsg">
+		<p><?php echo $this->info;?></p>
+	</div>
+	<?php }?>
+	<?php if($this->type == "error"){?>
+	<div class="errormsg">
+		<p><?php echo $this->info;?></p>
+	</div>
+	<?php }?>
+	<div class="hastabmenu">
+		<ul class="tabmenu">
+			<li id="addmanage" class="tabcurrent"><a href="#">文章信息</a></li>
+		</ul>
+		<div id="addmanagediv" class="tabcontentcur">
+			<form action="<?php echo $this->url(array("admin","article","addsubmit"));?>" method="post">
+				<table class="dbtb">
+					<tbody>
+						<tr>
+							<td class="tbtitle">标题:</td>
+							<td><input type="text" class="txt" value="" name="title" style="width:400px;"></td>
+						</tr>
+						<tr>
+							<td class="tbtitle">来源:</td>
+							<td><input type="text" class="txt" value="" name="fromto" style="width:200px;"></td>
+						</tr>
+						<tr>
+							<td class="tbtitle">分类:</td>
+							<td>
+							<select name="categoryid">
+							<option>请选择</option>
+							<?php echo $this->category_option;?>
+							</select>
+							</td>
+						</tr>
+						<tr>
+							<td class="tbtitle">正文:</td>
+							<td><?php  $this->FCKeditor->Create();?></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td>
+							<input type="submit" class="btn" value="提 交" name="addmanage"></td>
+						</tr>
+					</tbody>
+				</table>
+			</form>
+		</div>
+	</div>
+	
+</div>
+</body>
+</html>

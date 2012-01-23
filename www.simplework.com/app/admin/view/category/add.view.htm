@@ -9,14 +9,14 @@
 
 
 <div class="container">
-	<?php if($type == "S0001"){?>
+	<?php if($this->type == "success"){?>
 	<div class="correctmsg">
-		<p><?php echo $info;?></p>
+		<p><?php echo $this->info;?></p>
 	</div>
 	<?php }?>
-	<?php if($type == "E0001"){?>
+	<?php if($this->type == "error"){?>
 	<div class="errormsg">
-		<p><?php echo $info;?></p>
+		<p><?php echo $this->info;?></p>
 	</div>
 	<?php }?>
 	<h3>栏目管理</h3>
