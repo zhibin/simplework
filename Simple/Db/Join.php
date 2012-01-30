@@ -9,6 +9,7 @@ class Simple_Db_Join
     public $row;
     public $where;
     public $bind = array();
+    public $pre = false;
     public function __construct($entitys = array())
     {
         foreach ($entitys as $k => $v) {
@@ -59,25 +60,34 @@ class Simple_Db_Join
     }
     public function precheck($entity_cloumn)
     {
-        if (! empty($entity_cloumn))
+        $unitofwork = Simple_Db_Unitofwork::getInstance();
+        if (! empty($entity_cloumn)) {
             foreach ($entity_cloumn as $key => $value) {
                 $cloumn_arr = explode(".", $value);
                 $class = $cloumn_arr[0];
                 $cloumn = $cloumn_arr[1];
-                $unitofwork = Simple_Db_Unitofwork::getInstance();
                 $entity_list = $unitofwork->getTree($class);
                 if (! empty($entity_list)) {
                     foreach ($entity_list as $k => $v) {
                         if (($v->iscreate || array_key_exists($cloumn, $v->updatestack)) && ! $v->isdelete) {
-                            trigger_error("where update not commit db", E_USER_WARNING);
+                            trigger_error("where update not commit db", E_USER_ERROR);
+                            exit();
                         }
                     }
                 }
             }
+            $this->pre = true;
+        } else {
+            $this->pre = false;
+        }
         return $this;
     }
     public function end()
     {
+        if (! $this->pre) {
+            trigger_error("please input precheck", E_USER_ERROR);
+            exit();
+        }
         $sql = "select ";
         $from = $this->from;
         $join = $this->join;
@@ -95,11 +105,13 @@ class Simple_Db_Join
             $this->map[$k . '_id']['name'] = $k;
             $this->map[$k . '_id']['cloumn'] = 'id';
             $this->map[$k . '_id']['entity'] = $v;
+            $this->map[$k . '_id']['table'] = $v->table;
             $this->map[$k . '_id']['select'] = $v->table . ".id";
             $select_arr[] = $v->table . ".id" . " as " . $k . '_id';
             $this->map[$k . '_version']['name'] = $k;
             $this->map[$k . '_version']['cloumn'] = 'version';
             $this->map[$k . '_version']['entity'] = $v;
+            $this->map[$k . '_version']['table'] = $v->table;
             $this->map[$k . '_version']['select'] = $v->table . ".version";
             $select_arr[] = $v->table . ".version" . " as " . $k . '_version';
             $from = str_replace($k, $v->table, $from);
@@ -117,25 +129,39 @@ class Simple_Db_Join
         $this->joinToEntity($row);
         return $this;
     }
-    public function joinToEntity()
+    public function joinToEntity($build = 0)
     {
+        $unitofwork = Simple_Db_Unitofwork::getInstance();
         if (! empty($this->row))
             foreach ($this->row as $k => $v) {
                 foreach ($v as $kk => $vv) {
                     $map = $this->map[$kk];
                     $name = $map['name'];
                     $entity = $map['entity'];
+                    $table = $map['table'];
                     $id = $v[$name . "_id"];
                     $version = $v[$name . "_version"];
-                    $entity = $entity->buildByIndex($id, $version);
-                    $cloumn = $map['cloumn'];
-                    if ($entity->exists($cloumn)) {
-                        $this->row[$k][$kk] = $entity->$cloumn;
+                    if (empty($build)) {
+                        $entity = $entity->buildByIndex($id, $version);
+                        $cloumn = $map['cloumn'];
+                        if ($entity->exists($cloumn)) {
+                            $this->row[$k][$kk] = $entity->$cloumn;
+                        } else {
+                            $entity->setRow($cloumn, $vv);
+                        }
+                        if (array_key_exists($name, $this->entitys) && empty($this->entity_row[$name][$k])) {
+                            $this->entity_row[$name][$k] = $entity;
+                        }
                     } else {
-                        $entity->setRow($cloumn, $vv);
-                    }
-                    if (array_key_exists($name, $this->entitys) && empty($this->entity_row[$name][$k])) {
-                        $this->entity_row[$name][$k] = $entity;
+                        if ($unitofwork->exists($id . "_" . $table)) {
+                            $entity = $unitofwork->get($id . "_" . $table);
+                            $cloumn = $map['cloumn'];
+                            if ($entity->exists($cloumn)) {
+                                $this->row[$k][$kk] = $entity->$cloumn;
+                            } else {
+                                $entity->setRow($cloumn, $vv);
+                            }
+                        }
                     }
                 }
             }
