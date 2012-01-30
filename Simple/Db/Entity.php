@@ -105,8 +105,8 @@ class Simple_Db_Entity
                 if (! $unitofwork->exists($key)) {
                     $this->setKey($row['id']);
                     $this->row = $row;
-                    $unitofwork->register($this);
-                    $entity = $this;
+                    $entity = clone $this;
+                    $unitofwork->register($entity);
                 } else {
                     $entity = $unitofwork->get($key);
                     $config = Zend_Registry::get("config");

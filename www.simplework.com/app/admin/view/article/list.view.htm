@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="/css/managecp.css" type="text/css" media="all" />
+</head>
+<body>
+
+
+<div class="container">
+	<h3>文章列表 <a href="<?php echo $this->url(array("admin","article", "add"));?>">添加文章</a></h3>
+	<br />
+	<div class="hastabmenu">
+		
+		<div class="mainbox">
+				<table style="width: 800px;" class="datalist fixwidth">
+					<tbody>
+						<tr>
+							<th>序号</th>
+							<th>标题</th>
+							<th>分类</th>
+							<th>更新时间</th>
+							<th>操作</th>
+						</tr>
+						<?php  if(!empty($this->articles)) foreach($this->articles as $k => $article){?>
+						<tr>
+							<td><?php echo $article->id;?></td>
+							<td><?php echo $article->title;?></td>
+							<td><?php echo $article->category->name;?></td>
+							<td><?php echo $article->mtime();?></td>
+							<td><a href="<?php echo $this->url(array("admin","article", "modify",array("id"=>$article->id)));?>">编辑</a></td>
+						</tr>
+						<?php }?>
+					</tbody>
+				</table>
+				<?php echo $pageHTML;?>
+		</div>
+	</div>
+</div>
+	<div style="clear;both;"></div>
+</body>
+</html>

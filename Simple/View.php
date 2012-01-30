@@ -34,6 +34,11 @@ class Simple_View
             return $value;
         }
     }
+	public function __isset($key) 
+	{
+    	return isset($this->response->params[$key]);
+
+  	}
     public function action($map)
     {
         $oldstatus = $this->response->isrender;
@@ -41,8 +46,8 @@ class Simple_View
         $view = $this->response->dispatch->app($map);
         $this->response->isrender = $oldstatus;
     }
-    public function getUrl($map)
+    public function url($map)
     {
-        return $this->response->getUrl($map);
+        return $this->response->url($map);
     }
 }

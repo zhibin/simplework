@@ -33,6 +33,7 @@ class Simple_Db_Zend_Mysqli
                                  'dbname' => $params['db_name']);
         $type = $config->database->type;  
         $this->db = Zend_Db::factory($type, $db_config); 
+        $this->db->query("set names {$params['db_charset']}");
         return $this->db;
     }
     public function resource()

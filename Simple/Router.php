@@ -47,8 +47,9 @@ class Simple_Router
             $this->request->action = $a;
         }
     }
-    public function getUrl($map)
+    public function url($map)
     {
+    	ini_set('arg_separator.output', "&");
         $config = Zend_Registry::get("config");
         if ($map[0] != $config->home_page->app) {
             $query_array['app'] = strtolower($map[0]);
@@ -59,10 +60,10 @@ class Simple_Router
         if ($map[2] != $config->home_page->action) {
             $query_array['a'] = strtolower($map[2]);
         }
-        if (! empty($map[3])) {
+        if (! empty($map[3]) && is_array($map[3])) {
             $query_array = array_merge($query_array, $map[3]);
         }
-        if (! empty($map[4])) {
+        if (! empty($map[4]) && is_array($map[3])) {
             $query_array = array_merge($query_array, $map[4]);
         }
         if (! empty($query_array)) {

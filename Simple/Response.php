@@ -52,7 +52,8 @@ class Simple_Response
             $default_template = $view_home_path . $template;
         } else {
             $tpl_name = $map['action'];
-            $default_template = $view_home_path . '/' . $tpl_name . ".view.htm";
+            $controller_name = $map['controller'];
+            $default_template = $view_home_path . '/'.$controller_name. '/' . $tpl_name . ".view.htm";
         }
         if(!file_exists($default_template))
         {
@@ -82,10 +83,10 @@ class Simple_Response
         header("Location:$url");
         exit;
     }
-    public function getUrl($map)
+    public function url($map)
     {
         $router = $this->dispatch->rewrite->getRouter($map);
-        return $router->getUrl($map);
+        return $router->url($map);
     }
     public function dispatch($map)
     {

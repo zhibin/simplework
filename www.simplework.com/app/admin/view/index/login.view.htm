@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN""http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+		
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		
+		<title>Simple Admin | Sign In</title>
+		
+		<!--                       CSS                       -->
+	  
+		<!-- Main Stylesheet -->
+		<link rel="stylesheet" href="/resources/css/style.css" type="text/css" media="screen" />
+		
+		<!-- Invalid Stylesheet. This makes stuff look pretty. Remove it if you want the CSS completely valid -->
+		<link rel="stylesheet" href="/resources/css/invalid.css" type="text/css" media="screen" />	
+	
+		
+	</head>
+  
+	<body id="login">
+		
+		<div id="login-wrapper" class="png_bg">
+			<div id="login-top">
+			
+				<h1>Simpla Admin</h1>
+			</div> <!-- End #logn-top -->
+			
+			<div id="login-content">
+				
+				<form method="post" action="<?php echo $this->url(array("admin","index", "loginsubmit"));?>">
+				   <?php if(!empty($this->msg)){?>
+					<div class="notification information png_bg">
+						<div>
+							<?php echo $this->msg;?>
+						</div>
+					</div>
+					<?php }?>
+					
+					<p>
+						<label>Username</label>
+						<input name="username" class="text-input" type="text"  />
+					</p>
+					<div class="clear"></div>
+					<p>
+						<label>Password</label>
+						<input name="password" class="text-input" type="password" />
+					</p>
+					<div class="clear"></div>
+					<p id="remember-password">
+						<input name="remember" value="1" type="checkbox" />Remember me
+					</p>
+					<div class="clear"></div>
+					<p>
+						<input class="button" type="submit" value="Sign In" />
+					</p>
+					
+				</form>
+			</div> <!-- End #login-content -->
+			
+		</div> <!-- End #login-wrapper -->
+		
+  </body>
+  </html>
