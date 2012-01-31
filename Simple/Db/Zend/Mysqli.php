@@ -51,7 +51,13 @@ class Simple_Db_Zend_Mysqli
     }
     public function query($sql, $bind=array())
     {
+        try{
          $stmt = $this->db->query($sql, $bind);
+        }catch (Zend_Db_Exception  $e)
+        {
+           throw new Simple_Exception($sql);
+           exit;
+        }
          return $stmt->rowCount();
     }
 }

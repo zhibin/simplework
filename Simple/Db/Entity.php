@@ -228,12 +228,27 @@ class Simple_Db_Entity
             foreach ($this->row as $col => $val) {
                 if (in_array($col, $this->column)) {
                     $set[] = "`{$col}`";
-                    $vals[] = "'" . $val . "'";
+                    $vals[] = "'" . $this->daddslashes($val) . "'";
                 }
             }
             $sql = "insert into " . $this->table . ' (' . implode(', ', $set) . ') ' . 'values (' . implode(', ', $vals) . ')';
             return $sql;
         }
+    }
+    public function  daddslashes($string) 
+    {
+		if(is_array($string)) 
+		{
+			foreach($string as $key => $val) 
+			{
+				$string[$key] = daddslashes($val);
+			}
+		} 
+		else 
+		{
+			$string = addslashes($string);
+		}
+    	return $string;
     }
     public function delete()
     {
@@ -263,7 +278,7 @@ class Simple_Db_Entity
             $set[] = "version = '" . ($this->row['version'] + 1) . "'";
             foreach ($this->updatestack as $col => $val) {
                 if (in_array($col, $this->column)) {
-                    $set[] = "$col = '" . $val . "'";
+                    $set[] = "$col = '" . $this->daddslashes($val) . "'";
                 }
             }
             $sql = "update " . $this->table . ' set ' . implode(',', $set) . (($where) ? " where $where" : '');
