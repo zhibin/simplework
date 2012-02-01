@@ -66,7 +66,7 @@ class Simple_Front
             $dir_file = "$path/$file";
             if (is_dir($dir_file)) 
             {
-                $filelist = array_merge($filelist, $this->searchPlugin($dir_file));
+                $filelist = array_merge($filelist, $this->searchPlugin($dir_file, $pattern));
                 continue;
             }
              if(empty($pattern) || preg_match($pattern,$file,$match))  

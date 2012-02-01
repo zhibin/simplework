@@ -11,6 +11,7 @@ class Simple_Rewrite
     public function addRouter($router)
     {
         $this->routers[$router] = new $router($this->request);
+        return $this->routers[$router];
     }
     public function analysis()
     {
@@ -26,6 +27,10 @@ class Simple_Rewrite
     public function getRouter($map)
     {
       
+        if(!is_array($map) && !empty($map))
+        {
+            throw new Simple_Exception("router mast array and not empty!");
+        }
         $config = Zend_Registry::get("config");
         if (! array_key_exists($map[0], $config->app->toArray())) {
             $router = $this->routers['Simple_Router'];
