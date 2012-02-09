@@ -31,17 +31,20 @@ return array(
                     ),
 
 "app"=>array("index"=>array(
-                             "error_page"=>array("app"=>"index","controller"=>"index", "action"=>"error1"),
-                             "router"=>"Regex_Router",
+                       "router"=>"Regex_Router",
                      ),
                     
 			  "admin"=>array(
+                       "router"=>"Regex_Router",
+                     ),
+              "user"=>array(
                        "router"=>"Regex_Router",
                      )
            ),
            
 "regex_router"=>array("index"=>regex_router_app("regex_index.php"),
                       "admin"=>regex_router_app("regex_admin.php"),
+                      "user"=>regex_router_app("regex_user.php"),
                       )           
 );
 function regex_router_app($regex_app)

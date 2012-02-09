@@ -10,4 +10,8 @@ class IndexController extends Simple_Controller
     {
         
     }
+    public function  HeaderAction()
+    {
+        
+    }
 }
