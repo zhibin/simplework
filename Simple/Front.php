@@ -31,7 +31,7 @@ class Simple_Front
             {
                 throw new Simple_Exception("$plugin_path not find ");
             }
-            $plugin_list = $this->searchPlugin($plguin_path, '/^(.*)?\.plugin\.php/');
+            $plugin_list = $this->searchPlugin($plguin_path, '/^(.*)?\.plugin\.php$/');
             if(!empty($plugin_list))
             {
                 foreach($plugin_list as $k => $v)
