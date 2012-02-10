@@ -1,10 +1,17 @@
 <?php
 class Users extends Simple_Db_Entity
 {
+    
     public   $column =array(
 					"id",
 					"version",
-				    "password",
+				    "username",
+                    "nick",
+                    "qqid",
+                    "sinaid",
+                    "password",
+                    "pwd",
+                    "email",
 					"ctime",
 					"mtime",
 					);
@@ -18,6 +25,7 @@ class Users extends Simple_Db_Entity
 	public static function createBy($row)
 	{
 	     $entity = new self();
+	     $row['ctime'] = $row['mtime'] = time();
 	     $entity = $entity->create($row);
 	     return $entity;				
 	}
@@ -36,6 +44,22 @@ class Users extends Simple_Db_Entity
        $entity = $entity->getOne($where);
        return $entity;
     }
+    public static function getBySinaid($sinaid)
+    {
+      
+       $entity = new self();
+       $where = "sinaid='$sinaid'";
+       $entity = $entity->getOne($where);
+       return $entity;
+    }
+    public static function getByQQid($qqid)
+    {
+       $entity = new self();
+       $where = "qqid='$qqid'";
+       $entity = $entity->getOne($where);
+       return $entity;
+    }
+    
 }
 
 ?>

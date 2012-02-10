@@ -65,6 +65,7 @@ class Simple_Db_Entity
     }
     public function isEmpty()
     {
+        echo $this->key;
         if (empty($this->key) || $this->isdelete)
             return true; else
             return false;
@@ -79,6 +80,7 @@ class Simple_Db_Entity
             if (! $unitofwork->exists($key)) {
                 $this->row = $row;
                 $unitofwork->register($this);
+                $this->setKey($row['id']);
                 return $this;
             } else {
                 $entity = $unitofwork->get($key);

@@ -8,7 +8,6 @@ class IndexController extends Simple_Controller
     }
     public function ShoppingAction()
     {
-        
     }
     public function  HeaderAction()
     {
