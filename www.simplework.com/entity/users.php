@@ -6,7 +6,7 @@ class Users extends Simple_Db_Entity
 					"id",
 					"version",
 				    "username",
-                    "nick",
+                    "comefrom",
                     "qqid",
                     "sinaid",
                     "password",
@@ -36,11 +36,25 @@ class Users extends Simple_Db_Entity
        $entity = $entity->getByIndex($id);
        return $entity;
     }
-    public static function getByName($name)
+    public static function getByUsername($username)
     {
       
        $entity = new self();
-       $where = "username='$name'";
+       $where = "username='$username'";
+       $entity = $entity->getOne($where);
+       return $entity;
+    }
+    public static function getByEmailOrUsername($email)
+    {
+       $entity = new self();
+       $where = "username!='' && email != '' && (username='$email' or email='$email')";
+       $entity = $entity->getOne($where);
+       return $entity;
+    }
+    public static function getByEmail($email)
+    {
+       $entity = new self();
+       $where = "email='$email'";
        $entity = $entity->getOne($where);
        return $entity;
     }

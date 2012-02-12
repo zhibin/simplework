@@ -65,7 +65,6 @@ class Simple_Db_Entity
     }
     public function isEmpty()
     {
-        echo $this->key;
         if (empty($this->key) || $this->isdelete)
             return true; else
             return false;
