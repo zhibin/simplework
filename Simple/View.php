@@ -39,6 +39,13 @@ class Simple_View
     	return isset($this->response->params[$key]);
 
   	}
+  	public function partial($template)
+  	{
+  	    $config = Zend_Registry::get("config");
+        $view_home_path = $config->app_home .'/'.$config->app_dir. '/';
+        $default_template = $view_home_path . $template;
+        include $default_template;
+  	}
     public function action($map)
     {
         $oldstatus = $this->response->isrender;

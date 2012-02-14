@@ -58,16 +58,16 @@ class Simple_Db_Unitofwork
     {
         if (! empty($this->lists)) {
             foreach ($this->lists as $k => $v) {
-                $insertSql = $v->getInsertSql($v);
-                if (! empty($insertSql)) {
+                $insertSql = $v->getInsertSql();
+                if (! empty($insertSql) && $v->iscreate==true) {
                     $this->insertlist[$k] = $insertSql;
                     $v->iscreate = false;
                 }
-                $updateSql = $v->getUpdateSql($v);
+                $updateSql = $v->getUpdateSql();
                 if (! empty($updateSql)) {
                     $this->updatelist[$k] = $updateSql;
                 }
-                $deleteSql = $v->getDeleteSql($v);
+                $deleteSql = $v->getDeleteSql();
                 if (! empty($deleteSql)) {
                     $this->deletelist[$k] = $deleteSql;
                 }
@@ -94,6 +94,10 @@ class Simple_Db_Unitofwork
                 if ($rowCount == 0)
                     throw new Simple_Exception("unitofwork not delete success! version check clash", 1);
             }
+       //claer
+       $this->insertlist  = array();
+       $this->deletelist  = array();
+       $this->updatelist  = array();
     }
 }
 ?>
