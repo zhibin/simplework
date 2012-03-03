@@ -29,16 +29,17 @@ class Simple_Dispatch
     {
         
         $this->response->clear();
-        
+        $config = Zend_Registry::get("config");
+        $error_page = $config->error_page;
         if(empty($result['app']) || empty($result['controller']) || empty($result['action']))
         {
-            throw new Simple_Exception("empty!");
+            $result = $error_page->toArray();
         }
-        $config = Zend_Registry::get("config");
+       
         
         $app_home = $config->app_home;
         $app_path = $this->formatAppToFile($app_home, $result['app']);
-        $error_page = $config->error_page;
+        
         if (! is_dir($app_path)) 
         {
             $app_path = $this->formatAppToFile($app_home, $error_page->app);

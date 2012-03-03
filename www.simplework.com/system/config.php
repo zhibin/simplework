@@ -34,9 +34,9 @@ return array(
                        "router"=>"Regex_Router",
                      ),
                     
-			  "admin"=>array(
-                       "router"=>"Regex_Router",
-                     ),
+//			  "admin"=>array(
+//                       "router"=>"Regex_Router",
+//                     ),
               "user"=>array(
                        "router"=>"Regex_Router",
                      )

@@ -73,7 +73,10 @@ class Users extends Simple_Db_Entity
        $entity = $entity->getOne($where);
        return $entity;
     }
-    
+    public  function getAlbums()
+    {
+          return   Albums::getByUserid($this->id);
+    }
 }
 
 ?>

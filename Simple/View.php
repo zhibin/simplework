@@ -36,7 +36,15 @@ class Simple_View
     }
 	public function __isset($key) 
 	{
-    	return isset($this->response->params[$key]);
+	    if (array_key_exists($key, $this->params)) {
+           return isset($this->params[$key]);
+        } else if (array_key_exists($key, $this->response->params)) {
+           return isset($this->response->params[$key]);
+        } else if (array_key_exists($key, $this->response->contexts)) {
+            return isset($this->response->contexts[$key]);
+        } else {
+            return false;
+        }
 
   	}
   	public function partial($template)

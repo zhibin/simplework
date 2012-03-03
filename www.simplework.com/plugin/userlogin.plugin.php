@@ -11,7 +11,15 @@ class UserloginPlugin extends Simple_Plugin
     }
     public function dispatchLoopStartup($map)
     {
-        
+        session_start();
+        if($map['app'] == 'index' || $map['app'] == 'user')
+        {
+            if(!empty($_SESSION['site']['userid']))
+            {
+               $loginuser = Users::getById($_SESSION['site']['userid']);
+               $this->response->setContext("loginuser", $loginuser);
+            }
+        }
     }
     public function preDispatch($map)
     {
