@@ -286,6 +286,31 @@ class Simple_Db_Entity
             return $sql;
         }
     }
+	public function save()
+	{
+	    $unitofwork = Simple_Db_Unitofwork::getInstance();
+	    $insertSql = $this->getInsertSql();
+		if (! empty($insertSql) && $this->iscreate==true) {
+		    $unitofwork->db->query($insertSql);
+			$this->iscreate = false;
+        }
+		$updateSql = $this->getUpdateSql();
+		if (! empty($updateSql)) {
+		    $rowCount = $unitofwork->db->query($updateSql);
+			 if ($rowCount == 0)
+                    throw new Simple_Exception("save not update success! version check clash", 1);
+            }
+			$this->updatestack = array();
+		}
+		$deleteSql = $this->getDeleteSql();
+		if (! empty($deleteSql)) {
+			$rowCount = $unitofwork->db->query($deleteSql);
+			 if ($rowCount == 0)
+                    throw new Simple_Exception("save not delete success! version check clash", 1);
+            }
+			$this->isdelete = false;
+		}
+	}
     public function beLongToMap()
     {
         return array();

@@ -5,6 +5,11 @@ class Users extends Simple_Db_Entity
     public   $column =array(
 					"id",
 					"version",
+                    "nick",
+                  	"sex",                   
+                  	"province",                 
+                  	"city",                     
+                    "introduce",      
 				    "username",
                     "comefrom",
                     "qqid",
@@ -41,6 +46,14 @@ class Users extends Simple_Db_Entity
       
        $entity = new self();
        $where = "username='$username'";
+       $entity = $entity->getOne($where);
+       return $entity;
+    }
+   public static function getByNick($nick)
+    {
+      
+       $entity = new self();
+       $where = "nick='$nick'";
        $entity = $entity->getOne($where);
        return $entity;
     }

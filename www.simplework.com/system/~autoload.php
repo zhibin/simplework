@@ -14,6 +14,7 @@
           'sinausers' => 'D:\project\php\simplework\webroot/../www.simplework.com/entity/sinausers.php',
           'users' => 'D:\project\php\simplework\webroot/../www.simplework.com/entity/users.php',
           'categoryservice' => 'D:\project\php\simplework\webroot/../www.simplework.com/service/category.service.php',
+          'cityservice' => 'D:\project\php\simplework\webroot/../www.simplework.com/service/city.service.php',
           'mbapiclient' => 'D:\project\php\simplework\webroot/../www.simplework.com/service/qq/api_client.php',
           'mbopentoauth' => 'D:\project\php\simplework\webroot/../www.simplework.com/service/qq/opent.php',
           'simple_html_dom_node' => 'D:\project\php\simplework\webroot/../www.simplework.com/service/simple_html_dom.php',

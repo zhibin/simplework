@@ -42,12 +42,25 @@ class Simple_Db_Zend_Mysqli
     }
     public function fetch($sql, $bind=array())
     {
-	   $row = $this->db->fetchRow($sql, $bind);
+        try{
+         $row = $this->db->fetchRow($sql, $bind);
+        }catch (Zend_Db_Exception  $e)
+        {
+           throw new Simple_Exception($sql);
+           exit;
+        }
        return $row;
     }
     public function fetchAll($sql, $bind=array())
     {
-       return $this->db->fetchAll($sql, $bind);
+     try{
+         $rows = $this->db->fetchAll($sql, $bind);;
+        }catch (Zend_Db_Exception  $e)
+        {
+           throw new Simple_Exception($sql);
+           exit;
+        }
+       return $rows;
     }
     public function query($sql, $bind=array())
     {
@@ -55,6 +68,7 @@ class Simple_Db_Zend_Mysqli
          $stmt = $this->db->query($sql, $bind);
         }catch (Zend_Db_Exception  $e)
         {
+          
            throw new Simple_Exception($sql);
            exit;
         }

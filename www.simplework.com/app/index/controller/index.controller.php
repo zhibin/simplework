@@ -20,6 +20,139 @@ class IndexController extends Simple_Controller
         $this->response->imagewalls = $imagewalls;
         $this->response->pagehtml = Simple_Tool_Page::$page_html;
     }
+    public function ShowwallAction()
+    {
+        $frame = $this->request->get("frame");
+        $data['html']=array(
+        '<div class="i_w_f box_shadow">
+			<div class="hd"></div>
+			<div class="bd">
+				<ul class="pic">
+								<li type="goods" style="width:200px;height:200px">
+					<a target="_blank" href="#">
+					<img src="http://s4.mogujie.cn/b7/bao/120120/2jd99_kqyw63kxkrbgu2cugfjeg5sckzsew_310x310.jpg_200x999.jpg">
+					</a>
+					<span class="p">¥68</span>
+					<a style="display: none;" href="javascript:;" class="add_to_album_btn"></a>
+				</li>
+								</ul>
+				<div class="favorite">
+					<a href="javascript:;" class="favaImg">喜欢</a>
+					<div class="favDiv">
+				    <a target="_blank" class="favCount" href="/note/12f59bc">2050</a>
+				    <i></i>
+				    </div>
+					<span class="creply_n">
+					(
+					<a href="/note/1287qyw" target="_blank">9</a>
+					)
+					</span>
+					<a href="/note/1287qyw" target="_blank" class="creply">评论</a>
+					</div>
+			</div>
+			<div class="who_share_s">
+				<a target="_blank" href="/u/15tn7g">
+					<img src="http://s9.mogujie.cn/b7/avatar/120129/2wtky_kqywumsmkrbfiq2ugfjeg5sckzsew_200x200.jpg_32x32.jpg" alt="璐璐wwl" class="icard avt fl r3">
+				</a>
+				<div class="share_info">
+					<a href="/u/15tn7g" target="_blank" class="n icard">璐璐wwl</a>
+					<p class="clr6">
+					软绵绵珊瑚绒球球睡裙♥
+					</p>
+				</div>
+			</div>
+			<ul class="rep_list ">
+				<li class="rep_f rep_pb">
+					<a target="_blank" href="">
+					<img src="http://s8.mogujie.cn/b7/avatar/120111/2mw1u_kqywcvk2krbfirkugfjeg5sckzsew_100x100.jpg_24x24.jpg" class="avt icard">
+					</a>
+					<p class="rep_content">
+					<a target="_blank" href="/u/159s58" class="n icard gc">爱豆花的晓妍</a>
+					: 不错不错~不错不错~不错不错~不错不错~不错不错~
+					</p>
+				</li>
+				<li class="rep_f rep_pb clear">
+					<a target="_blank" href="/u/159s58">
+					<img src="http://s8.mogujie.cn/b7/avatar/120111/2mw1u_kqywcvk2krbfirkugfjeg5sckzsew_100x100.jpg_24x24.jpg" alt="爱豆花的晓妍" class="avt icard">
+					</a>
+					<p class="rep_content">
+					<a target="_blank" href="/u/159s58" class="n icard gc">爱豆花的晓妍</a>
+					: 不错不错~
+					</p>
+				</li>
+				<div class="clear"></div>
+			</ul>
+			<div class="ws_ft"></div>
+		</div>', '<div class="i_w_f box_shadow">
+			<div class="hd"></div>
+			<div class="bd">
+				<ul class="pic">
+								<li type="goods" style="width:200px;height:200px">
+					<a target="_blank" href="#">
+					<img src="http://s4.mogujie.cn/b7/bao/120120/2jd99_kqyw63kxkrbgu2cugfjeg5sckzsew_310x310.jpg_200x999.jpg">
+					</a>
+					<span class="p">¥68</span>
+					<a style="display: none;" href="javascript:;" class="add_to_album_btn"></a>
+				</li>
+								</ul>
+				<div class="favorite">
+					<a href="javascript:;" class="favaImg">喜欢</a>
+					<div class="favDiv">
+				    <a target="_blank" class="favCount" href="/note/12f59bc">2050</a>
+				    <i></i>
+				    </div>
+					<span class="creply_n">
+					(
+					<a href="/note/1287qyw" target="_blank">9</a>
+					)
+					</span>
+					<a href="/note/1287qyw" target="_blank" class="creply">评论</a>
+					</div>
+			</div>
+			<div class="who_share_s">
+				<a target="_blank" href="/u/15tn7g">
+					<img src="http://s9.mogujie.cn/b7/avatar/120129/2wtky_kqywumsmkrbfiq2ugfjeg5sckzsew_200x200.jpg_32x32.jpg" alt="璐璐wwl" class="icard avt fl r3">
+				</a>
+				<div class="share_info">
+					<a href="/u/15tn7g" target="_blank" class="n icard">璐璐wwl</a>
+					<p class="clr6">
+					软绵绵珊瑚绒球球睡裙♥
+					</p>
+				</div>
+			</div>
+			<ul class="rep_list ">
+				<li class="rep_f rep_pb">
+					<a target="_blank" href="">
+					<img src="http://s8.mogujie.cn/b7/avatar/120111/2mw1u_kqywcvk2krbfirkugfjeg5sckzsew_100x100.jpg_24x24.jpg" class="avt icard">
+					</a>
+					<p class="rep_content">
+					<a target="_blank" href="/u/159s58" class="n icard gc">爱豆花的晓妍</a>
+					: 不错不错~不错不错~不错不错~不错不错~不错不错~
+					</p>
+				</li>
+				<li class="rep_f rep_pb clear">
+					<a target="_blank" href="/u/159s58">
+					<img src="http://s8.mogujie.cn/b7/avatar/120111/2mw1u_kqywcvk2krbfirkugfjeg5sckzsew_100x100.jpg_24x24.jpg" alt="爱豆花的晓妍" class="avt icard">
+					</a>
+					<p class="rep_content">
+					<a target="_blank" href="/u/159s58" class="n icard gc">爱豆花的晓妍</a>
+					: 不错不错~
+					</p>
+				</li>
+				<div class="clear"></div>
+			</ul>
+			<div class="ws_ft"></div>
+		</div>');
+        if($frame == 8)
+        {
+           $data['pagerHtml'] = 1;
+        }
+        $data['error'] = 0;
+        $data['frame'] = $frame+1;
+        
+        echo json_encode($data);
+        exit;
+    }
     public function HeaderAction()
     {}
 //    public function getjpegsize($img_loc) {

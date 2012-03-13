@@ -66,10 +66,12 @@ class Simple_Db_Unitofwork
                 $updateSql = $v->getUpdateSql();
                 if (! empty($updateSql)) {
                     $this->updatelist[$k] = $updateSql;
+					$v->updatestack = array();
                 }
                 $deleteSql = $v->getDeleteSql();
                 if (! empty($deleteSql)) {
                     $this->deletelist[$k] = $deleteSql;
+					$v->isdelete = false;
                 }
             }
         }
